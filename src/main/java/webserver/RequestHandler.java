@@ -2,6 +2,7 @@ package webserver;
 
 import java.io.*;
 import java.net.Socket;
+import java.nio.file.Files;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,22 +22,46 @@ public class RequestHandler implements Runnable {
 
         try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
             BufferedReader br = new BufferedReader(new InputStreamReader(in, "UTF-8"));
-            String line = br.readLine();
-            logger.debug("request line : {}" + line);
-            System.out.println("request : " + line);
-            while (!line.equals("")) {
+            DataOutputStream dos = new DataOutputStream(out);
+
+
+//            logger.debug("request line : {}" + line);
+//            System.out.println("request : " + line);
+            byte[] body = new byte[8192];
+            String line = "";
+            int lineCount = 0;
+
+            while (true) {
                 line = br.readLine();
-                logger.debug("header: {}", line);
-                System.out.println("request : " + line);
+                if (line == null || "".equals(line)) break;
+
+                logger.debug("Line: {}", line);
+
+                if (lineCount == 0) {
+                    String path = line.split(" ")[1];
+                    logger.debug("Path: {}", path);
+
+                    body = getBytesFromStaticFile(path);
+                }
+
+                lineCount++;
             }
 
-            // TODO 사용자 요청에 대한 처리는 이 곳에 구현하면 된다.
-            DataOutputStream dos = new DataOutputStream(out);
-            byte[] body = "Hello World".getBytes();
+//            byte[] body = "Hello World".getBytes();
+
             response200Header(dos, body.length);
             responseBody(dos, body);
         } catch (IOException e) {
             logger.error(e.getMessage());
+        }
+    }
+
+    private byte[] getBytesFromStaticFile(String path) throws IOException {
+        byte[] bytes = new byte[8192];
+        try {
+            return Files.readAllBytes(new File("./webapp" + path).toPath());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 
