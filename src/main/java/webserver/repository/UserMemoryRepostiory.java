@@ -2,6 +2,8 @@ package webserver.repository;
 
 import model.User;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -25,6 +27,17 @@ public class UserMemoryRepostiory implements UserRepository {
     }
 
     @Override
+    public List<User> findAll() {
+        List<User> list = new ArrayList<>();
+
+        for (User user : users.values()) {
+            list.add(user);
+        }
+
+        return list;
+    }
+
+    @Override
     public User update(User user) {
         return null;
     }
@@ -32,5 +45,10 @@ public class UserMemoryRepostiory implements UserRepository {
     @Override
     public boolean delete(User user) {
         return false;
+    }
+
+    @Override
+    public void clear() {
+        users.clear();
     }
 }
