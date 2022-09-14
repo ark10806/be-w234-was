@@ -1,4 +1,4 @@
-package etc;
+package util;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -6,24 +6,24 @@ import org.slf4j.LoggerFactory;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public final class StringUtil {
     private static final Logger logger = LoggerFactory.getLogger(StringUtil.class);
 
     // 인풋 스트림에서 문자열을 끝까지 읽어 하나의 string으로 반환합니다.
-    public static ArrayList<String> inputStreamToLines(InputStream in){
+    public static List<String> inputStreamToLines(InputStream in){
         BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-        ArrayList<String> linesArray = new ArrayList<String>();
+        List<String> linesArray = new ArrayList<>();
         String line;
 
         try {
             line = reader.readLine();
-            while(!line.isEmpty()){
-                linesArray.add(line);
+            while(!"".equals(line) && line!=null){
+                linesArray.add(line.trim());
                 line = reader.readLine();
             }
         } catch (Exception e) {
@@ -43,5 +43,9 @@ public final class StringUtil {
             map.put(keyval[0],keyval[1]);
         }
         return map;
+    }
+
+    public static Map<String,String> parseQueryString(String queryString){
+        return parseStringToMap(queryString, "&", "=");
     }
 }
