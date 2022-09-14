@@ -1,6 +1,7 @@
 package webserver;
 
 import java.util.Map;
+import java.util.Objects;
 
 public class HttpRequest {
 
@@ -30,5 +31,18 @@ public class HttpRequest {
 
     public Map<String, String> getParameters() {
         return parameters;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        HttpRequest that = (HttpRequest) o;
+        return method == that.method && path.equals(that.path) && protocol.equals( that.protocol) && parameters.equals(that.parameters);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(method, path, protocol, parameters);
     }
 }
