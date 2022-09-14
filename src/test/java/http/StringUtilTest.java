@@ -1,14 +1,12 @@
-package etc;
+package http;
 
-import com.google.common.io.CharSource;
 import org.junit.jupiter.api.Test;
+import util.StringUtil;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 

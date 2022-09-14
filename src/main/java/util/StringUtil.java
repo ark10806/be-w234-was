@@ -1,4 +1,4 @@
-package etc;
+package util;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,7 +22,7 @@ public final class StringUtil {
 
         try {
             line = reader.readLine();
-            while(line!=null){
+            while(!"".equals(line) && line!=null){
                 linesArray.add(line.trim());
                 line = reader.readLine();
             }

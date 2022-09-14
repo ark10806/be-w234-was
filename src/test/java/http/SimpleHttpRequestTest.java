@@ -1,8 +1,9 @@
-package etc;
+package http;
 
+import http.request.HttpRequest;
+import http.request.SimpleHttpRequest;
 import org.junit.jupiter.api.*;
 
-import java.io.ByteArrayInputStream;
 import java.util.List;
 import java.util.Map;
 
