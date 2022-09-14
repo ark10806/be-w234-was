@@ -10,6 +10,7 @@ public class ServiceHandlerMapper {
         handlers = new HashMap<>();
 
         handlers.put("static file", new StaticFileServiceHandler());
+        handlers.put("/user/create", new SignUpServiceHandler());
     }
 
     private ServiceHandlerMapper() {
