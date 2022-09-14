@@ -9,6 +9,8 @@ import java.util.Map;
 
 public class Database {
     private static Map<String, User> users = Maps.newHashMap();
+    private static final Database database = new Database();
+    public static Database getDatabase(){ return database;}
 
     public static void addUser(User user) {
         users.put(user.getUserId(), user);
