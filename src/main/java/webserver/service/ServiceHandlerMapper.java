@@ -1,6 +1,6 @@
 package webserver.service;
 
-import webserver.repository.UserMemoryRepostiory;
+import webserver.repository.UserMemoryRepository;
 import webserver.repository.UserRepository;
 
 import java.util.HashMap;
@@ -12,7 +12,7 @@ public class ServiceHandlerMapper {
 
     static {
         handlers = new HashMap<>();
-        userRepository = new UserMemoryRepostiory();
+        userRepository = new UserMemoryRepository();
 
         handlers.put("static file", new StaticFileServiceHandler());
         handlers.put("/user/create", new SignUpServiceHandler(userRepository));

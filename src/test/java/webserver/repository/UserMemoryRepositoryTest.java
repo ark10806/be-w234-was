@@ -8,8 +8,8 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class UserMemoryRepostioryTest {
-    UserRepository userRepository = new UserMemoryRepostiory();
+class UserMemoryRepositoryTest {
+    UserRepository userRepository = new UserMemoryRepository();
 
     User user1 = new User("user1_id", "user1_pw", "user1", "user1@kakaocorp.com");
     User user2 = new User("user2_id", "user2_pw", "user2", "user2@kakaocorp.com");

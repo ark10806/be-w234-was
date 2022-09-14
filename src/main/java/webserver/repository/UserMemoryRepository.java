@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class UserMemoryRepostiory implements UserRepository {
+public class UserMemoryRepository implements UserRepository {
     private static Map<Integer, User> users = new ConcurrentHashMap<>();
     private static int sequence = 0;
 
