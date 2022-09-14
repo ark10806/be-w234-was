@@ -27,7 +27,7 @@ public class RequestHandler implements Runnable {
 
 //            logger.debug("request line : {}" + line);
 //            System.out.println("request : " + line);
-            byte[] body = new byte[8192];
+            byte[] body = generatorBody();
             String line = "";
             int lineCount = 0;
 
@@ -57,7 +57,7 @@ public class RequestHandler implements Runnable {
     }
 
     private byte[] getBytesFromStaticFile(String path) throws IOException {
-        byte[] bytes = new byte[8192];
+        byte[] body = generatorBody();
         try {
             return Files.readAllBytes(new File("./webapp" + path).toPath());
         } catch (IOException e) {
@@ -85,3 +85,9 @@ public class RequestHandler implements Runnable {
         }
     }
 }
+Footer
+        © 2022 GitHub, Inc.
+        Footer navigation
+        Terms
+        Privacy
+        Security
