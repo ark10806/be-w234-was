@@ -22,46 +22,19 @@ public class RequestHandler implements Runnable {
 
         try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
             BufferedReader br = new BufferedReader(new InputStreamReader(in, "UTF-8"));
-            DataOutputStream dos = new DataOutputStream(out);
-
-
-//            logger.debug("request line : {}" + line);
-//            System.out.println("request : " + line);
-            byte[] body = generatorBody();
-            String line = "";
-            int lineCount = 0;
-
-            while (true) {
-                line = br.readLine();
-                if (line == null || "".equals(line)) break;
-
-                logger.debug("Line: {}", line);
-
-                if (lineCount == 0) {
-                    String path = line.split(" ")[1];
-                    logger.debug("Path: {}", path);
-
-                    body = getBytesFromStaticFile(path);
-                }
-
-                lineCount++;
+            String line = br.readLine();
+            if (line == null) {
+                return;
             }
 
-//            byte[] body = "Hello World".getBytes();
+            String url = RequestParser.getUrl(line);
+            DataOutputStream dos = new DataOutputStream(out);
 
+            byte[] body = Files.readAllBytes(new File("./webapp" + url).toPath());
             response200Header(dos, body.length);
             responseBody(dos, body);
         } catch (IOException e) {
             logger.error(e.getMessage());
-        }
-    }
-
-    private byte[] getBytesFromStaticFile(String path) throws IOException {
-        byte[] body = generatorBody();
-        try {
-            return Files.readAllBytes(new File("./webapp" + path).toPath());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
         }
     }
 
