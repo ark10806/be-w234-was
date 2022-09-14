@@ -34,26 +34,24 @@ public class RequestHandler implements Runnable {
 
             try {
                 String url = HttpRequestUtils.getUrl(line);
+                if (url.startsWith("/create?")) {
+                    try {
+                        Database.addUser(createUser(url));
+                    } catch (IllegalArgumentException e) {
+                        logger.debug("Exception : {}", e.getMessage());
+                    } finally {
+                        url = "/index.html"; // 회원가입 버튼 클릭 후, "index.html"으로 페이지 이동
+                    }
+                }
+
+                DataOutputStream dos = new DataOutputStream(out);
+                byte[] body = Files.readAllBytes(new File("./webapp" + url).toPath());
+                response200Header(dos, body.length);
+                responseBody(dos, body);
             } catch(UnsupportedEncodingException e) {
-                logger.debug("{}", e.getMessage());
+                logger.debug("Exception : {}", e.getMessage());
                 return;
             }
-
-            String url = HttpRequestUtils.getUrl(line);
-            if (url.startsWith("/create?")) {
-                try {
-                    Database.addUser(createUser(url));
-                } catch (IllegalArgumentException e) {
-                    logger.debug("{}", e.getMessage());
-                } finally {
-                    url = "/index.html"; // 회원가입 버튼 클릭 후, "index.html"으로 페이지 이동
-                }
-            }
-
-            DataOutputStream dos = new DataOutputStream(out);
-            byte[] body = Files.readAllBytes(new File("./webapp" + url).toPath());
-            response200Header(dos, body.length);
-            responseBody(dos, body);
         } catch (IOException e) {
             logger.error(e.getMessage());
         }
