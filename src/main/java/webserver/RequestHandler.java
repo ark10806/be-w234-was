@@ -7,6 +7,9 @@ import java.nio.file.Files;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import urlHandler.UrlHandlerMapper;
+import urlHandler.handler.StaticHtmlHandler;
+import urlHandler.handler.UrlHandler;
 
 public class RequestHandler implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
@@ -22,13 +25,18 @@ public class RequestHandler implements Runnable {
                 connection.getPort());
 
         try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
-            // TODO 사용자 요청에 대한 처리는 이 곳에 구현하면 된다.
+
             RequestParser requestParser = new RequestParser();
             BufferedReader br = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
             String url = requestParser.getUrl(br.readLine());
 
+            // process
+            UrlHandlerMapper urlHandlerMapper = new UrlHandlerMapper();
+            UrlHandler urlHandler = urlHandlerMapper.HandlerMapping(url);
+
+            // response
+            byte[] body = urlHandler.handle(url);
             DataOutputStream dos = new DataOutputStream(out);
-            byte[] body = Files.readAllBytes(new File("./webapp" + url).toPath());
             response200Header(dos, body.length);
             responseBody(dos, body);
         } catch (IOException e) {
