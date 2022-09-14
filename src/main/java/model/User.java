@@ -33,4 +33,17 @@ public class User {
     public String toString() {
         return "User [userId=" + userId + ", password=" + password + ", name=" + name + ", email=" + email + "]";
     }
+
+    /**
+     * @param userId
+     * @param password
+     * @param name
+     * @param email
+     * @return
+     */
+    public static boolean isValid(String userId, String password, String name, String email) {
+        // TODO : 조건 정해야 함
+
+        return true;
+    }
 }

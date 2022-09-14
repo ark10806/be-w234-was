@@ -1,13 +1,15 @@
 package webserver;
 
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.Socket;
+import java.nio.file.Files;
+import java.util.Map;
 
+import db.Database;
+import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import util.HttpRequestUtils;
 
 public class RequestHandler implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
@@ -23,9 +25,25 @@ public class RequestHandler implements Runnable {
                 connection.getPort());
 
         try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
-            // TODO 사용자 요청에 대한 처리는 이 곳에 구현하면 된다.
+            BufferedReader br = new BufferedReader(new InputStreamReader(in, "UTF-8"));
+            String line = br.readLine();
+            if (line == null) {
+                return;
+            }
+
+            String url = HttpRequestUtils.getUrl(line);
+            if (url.startsWith("/create?")) {
+                try {
+                    Database.addUser(createUser(url));
+                } catch (IllegalArgumentException e) {
+                    logger.debug("{}", e.getMessage());
+                } finally {
+                    url = "/index.html"; // 회원가입 버튼 클릭 후, "index.html"으로 페이지 이동
+                }
+            }
+
             DataOutputStream dos = new DataOutputStream(out);
-            byte[] body = "Hello World".getBytes();
+            byte[] body = Files.readAllBytes(new File("./webapp" + url).toPath());
             response200Header(dos, body.length);
             responseBody(dos, body);
         } catch (IOException e) {
@@ -51,5 +69,21 @@ public class RequestHandler implements Runnable {
         } catch (IOException e) {
             logger.error(e.getMessage());
         }
+    }
+
+    /**
+     * @param url 회원가입 버튼 클릭 시 전달되는 url (ex. /create?userId=~~~)
+     * @return User object
+     */
+    private User createUser(String url) throws IllegalArgumentException {
+        int index = url.indexOf("?");
+        String queryString = url.substring(index + 1);
+        Map<String, String> params = HttpRequestUtils.parseQueryString(queryString);
+        if (User.isValid(params.get("userId"), params.get("password"), params.get("name"), params.get("email")) == false) {
+            throw new IllegalArgumentException("Illegal User Argument");
+        }
+        User user = new User(params.get("userId"), params.get("password"), params.get("name"), params.get("email"));
+        logger.debug("{}", user);
+        return user;
     }
 }
