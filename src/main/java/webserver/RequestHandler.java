@@ -24,27 +24,9 @@ public class RequestHandler implements Runnable {
             BufferedReader br = new BufferedReader(new InputStreamReader(in, "UTF-8"));
             DataOutputStream dos = new DataOutputStream(out);
 
-            byte[] body = new byte[8192];
-            String line = "";
-            int lineCount = 0;
+            HeaderStartLine startLine = new HeaderStartLine(br.readLine());
 
-            logger.debug("--------Request Header--------");
-
-            while (true) {
-                line = br.readLine();
-                if (line == null || "".equals(line)) break;
-
-                logger.debug("Line: {}", line);
-
-                if (lineCount == 0) {
-                    String path = line.split(" ")[1];
-                    logger.debug("Path: {}", path);
-
-                    body = getBytesFromStaticFile(path);
-                }
-
-                lineCount++;
-            }
+            byte[] body = getDataByHeaderFirstLine(startLine);
 
             response200Header(dos, body.length);
             responseBody(dos, body);
@@ -52,16 +34,17 @@ public class RequestHandler implements Runnable {
             logger.error(e.getMessage());
         }
     }
+    private byte[] getDataByHeaderFirstLine(HeaderStartLine line) throws IOException {
 
-    private byte[] getBytesFromStaticFile(String path) throws IOException {
         byte[] bytes = new byte[8192];
         try {
-            bytes = Files.readAllBytes(new File("./webapp" + path).toPath());
+            bytes = Files.readAllBytes(new File("./webapp" + line.getUrl()).toPath());
         } catch (Exception e) {
             bytes = Files.readAllBytes(new File("./webapp" + "/error_not_found.html").toPath());
         }
 
         return bytes;
+
     }
 
     private void response200Header(DataOutputStream dos, int lengthOfBodyContent) {
