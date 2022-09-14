@@ -6,11 +6,16 @@ import java.util.stream.Collectors;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import webserver.RequestHandler;
 
 public class HttpRequestUtils {
+    private static final Logger logger = LoggerFactory.getLogger(HttpRequestUtils.class);
     public static String getUrl(String firstLine) {
         String[] splitted = firstLine.split(" ");
         String url = splitted[1];
+        logger.debug("request url : {}", url);
         return url;
     }
     /**
