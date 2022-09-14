@@ -11,16 +11,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class RequestHandler implements Runnable {
-    private final String RESOURCE_DIR = "webapp";
-
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
 
     private Socket connection;
     private RequestParser requestParser;
+    private Servlet servlet;
 
     public RequestHandler(Socket connectionSocket) throws Exception {
         this.connection = connectionSocket;
         this.requestParser = new RequestParser(connection.getInputStream());
+        this.servlet = new Servlet();
     }
 
     public void run() {
@@ -48,23 +48,7 @@ public class RequestHandler implements Runnable {
     }
 
     private byte[] generateBody() {
-        try {
-            return generateHtmlBody(getResourcePath(requestParser.path));
-        } catch (Exception e) {
-            return generateDefaultBody();
-        }
-    }
-
-    private String getResourcePath(String path) {
-        return RESOURCE_DIR + path;
-    }
-
-    private byte[] generateHtmlBody(String path) throws IOException {
-        return Files.readAllBytes(new File(path).toPath());
-    }
-
-    private byte[] generateDefaultBody() {
-        return "Hello World".getBytes();
+        return servlet.service(requestParser).getBytes();
     }
 
     private void response200Header(DataOutputStream dos, int lengthOfBodyContent) {
