@@ -6,6 +6,7 @@ import java.nio.file.Files;
 import java.util.Map;
 
 import db.Database;
+import model.EnumUserException;
 import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,6 +29,13 @@ public class RequestHandler implements Runnable {
             BufferedReader br = new BufferedReader(new InputStreamReader(in, "UTF-8"));
             String line = br.readLine();
             if (line == null) {
+                return;
+            }
+
+            try {
+                String url = HttpRequestUtils.getUrl(line);
+            } catch(UnsupportedEncodingException e) {
+                logger.debug("{}", e.getMessage());
                 return;
             }
 
@@ -79,8 +87,9 @@ public class RequestHandler implements Runnable {
         int index = url.indexOf("?");
         String queryString = url.substring(index + 1);
         Map<String, String> params = HttpRequestUtils.parseQueryString(queryString);
-        if (User.isValid(params.get("userId"), params.get("password"), params.get("name"), params.get("email")) == false) {
-            throw new IllegalArgumentException("Illegal User Argument");
+        EnumUserException enumUserException = User.isValid(params.get("userId"), params.get("password"), params.get("name"), params.get("email"));
+        if ( enumUserException != EnumUserException.VALID_ARGS ) {
+            throw new IllegalArgumentException(enumUserException.getMessage());
         }
         User user = new User(params.get("userId"), params.get("password"), params.get("name"), params.get("email"));
         logger.debug("{}", user);

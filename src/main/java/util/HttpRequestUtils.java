@@ -1,5 +1,8 @@
 package util;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -12,9 +15,14 @@ import webserver.RequestHandler;
 
 public class HttpRequestUtils {
     private static final Logger logger = LoggerFactory.getLogger(HttpRequestUtils.class);
-    public static String getUrl(String firstLine) {
+
+    /**
+     * @param firstLine HTTP Request Header의 첫 번째 줄 (ex. "GET /index.html HTTP/1.1")
+     * @return url
+     */
+    public static String getUrl(String firstLine) throws UnsupportedEncodingException {
         String[] splitted = firstLine.split(" ");
-        String url = splitted[1];
+        String url = URLDecoder.decode(splitted[1], "UTF-8");
         logger.debug("request url : {}", url);
         return url;
     }
