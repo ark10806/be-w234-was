@@ -2,10 +2,13 @@ package webserver;
 
 import java.io.*;
 import java.net.Socket;
-import java.net.SocketException;
-import java.nio.charset.StandardCharsets;
-import java.util.stream.Collectors;
 
+import http.request.HttpRequest;
+import http.request.SimpleHttpRequest;
+import http.response.BaseHTTPResponse;
+import http.response.HttpResponse;
+import http.response.ResponseHeader;
+import http.response.textresponse.FileResponseBody;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,14 +26,30 @@ public class RequestHandler implements Runnable {
                 connection.getPort());
 
         try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
+            HttpRequest requestData = new SimpleHttpRequest(in);
+            logger.info("http request parsed");
 
             DataOutputStream dos = new DataOutputStream(out);
-            byte[] body = "Hello World".getBytes();
-            response200Header(dos, body.length);
-            responseBody(dos, body);
+
+//            byte[] body = "Hello World".getBytes();
+//            response200Header(dos, body.length);
+//            responseBody(dos, body);
+
+            String path = requestData.getPath();
+            logger.info("PATH {}",path);
+            FileResponseBody fileResponseBody = new FileResponseBody("webapp/" + path);
+            logger.info("file response body created");
+            HttpResponse response = new BaseHTTPResponse()
+                    .status(200)
+                    .addHeader(new ResponseHeader("Content-Type", "text/html;charset=utf-8"))
+                    .body(fileResponseBody);
+            logger.info("http response prepread");
+            response.send(dos);
+
         } catch (IOException e) {
             logger.info("run() error");
             logger.error(e.getMessage());
+            e.printStackTrace();
         }
 
         try {
