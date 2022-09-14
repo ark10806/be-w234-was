@@ -11,6 +11,11 @@ public class UserMemoryRepostiory implements UserRepository {
 
     @Override
     public User save(User user) {
+        System.out.println("users.size() = " + users.size());
+        if (users.containsValue(user)) {
+            return null;
+        }
+
         users.put(sequence++, user);
         return user;
     }
