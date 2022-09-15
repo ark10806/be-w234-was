@@ -2,18 +2,14 @@ package webserver;
 
 import java.io.*;
 import java.net.Socket;
-import java.nio.file.Files;
-import java.util.Map;
 
 import db.Database;
+import exception.CreateUserException;
 import http.HttpResponse;
-import model.EnumUserException;
 import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import util.HttpRequestUtils;
-
-import static model.User.createUser;
 
 public class RequestHandler implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
@@ -35,25 +31,20 @@ public class RequestHandler implements Runnable {
                 return;
             }
 
-            try {
-                String url = HttpRequestUtils.getUrl(line);
+            String url = HttpRequestUtils.getUrl(line);
 
-                if (url.startsWith("/create?")) {
-                    try {
-                        Database.addUser(createUser(url));
-                    } catch (IllegalArgumentException e) {
-                        logger.debug("Exception : {}", e.getMessage());
-                    } finally {
-                        url = "/index.html"; // 회원가입 버튼 클릭 후, "index.html"으로 페이지 이동
-                    }
+            if (url.startsWith("/create?")) {
+                try {
+                    Database.addUser(User.createUser(url));
+                } catch (CreateUserException e) {
+                    logger.debug("CreateUserException : {}", e.getMessage());
+                } finally {
+                    url = "/index.html"; // 회원가입 버튼 클릭 후, "index.html"으로 페이지 이동
                 }
-
-                HttpResponse httpResponse = new HttpResponse(out, url, "200");
-                httpResponse.response();
-            } catch(UnsupportedEncodingException e) {
-                logger.debug("Exception : {}", e.getMessage());
-                return;
             }
+
+            HttpResponse httpResponse = new HttpResponse(out, url, "200");
+            httpResponse.response();
         } catch (IOException e) {
             logger.error(e.getMessage());
         }

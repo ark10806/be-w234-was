@@ -1,5 +1,7 @@
 package model;
 
+import exception.CreateUserException;
+import exception.EnumUserException;
 import model.validator.EmailValidator;
 import model.validator.NameValidator;
 import model.validator.PasswordValidator;
@@ -7,7 +9,6 @@ import model.validator.UserIdValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import util.HttpRequestUtils;
-import webserver.RequestHandler;
 
 import java.util.Map;
 
@@ -50,13 +51,13 @@ public class User {
      * @param url 회원가입 버튼 클릭 시 전달되는 url (ex. /create?userId=~~~)
      * @return User object
      */
-    public static User createUser(String url) throws IllegalArgumentException {
+    public static User createUser(String url) throws CreateUserException {
         int index = url.indexOf("?");
         String queryString = url.substring(index + 1);
         Map<String, String> params = HttpRequestUtils.parseQueryString(queryString);
         EnumUserException enumUserException = User.isValid(params.get("userId"), params.get("password"), params.get("name"), params.get("email"));
         if ( enumUserException != EnumUserException.VALID_ARGS ) {
-            throw new IllegalArgumentException(enumUserException.getMessage());
+            throw new CreateUserException(enumUserException.getMessage());
         }
         User user = new User(params.get("userId"), params.get("password"), params.get("name"), params.get("email"));
         logger.debug("{}", user);
