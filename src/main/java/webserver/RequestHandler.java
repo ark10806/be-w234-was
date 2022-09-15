@@ -6,6 +6,7 @@ import java.nio.file.Files;
 import java.util.Map;
 
 import db.Database;
+import http.HttpResponse;
 import model.EnumUserException;
 import model.User;
 import org.slf4j.Logger;
@@ -34,6 +35,7 @@ public class RequestHandler implements Runnable {
 
             try {
                 String url = HttpRequestUtils.getUrl(line);
+
                 if (url.startsWith("/create?")) {
                     try {
                         Database.addUser(createUser(url));
@@ -44,34 +46,12 @@ public class RequestHandler implements Runnable {
                     }
                 }
 
-                DataOutputStream dos = new DataOutputStream(out);
-                byte[] body = Files.readAllBytes(new File("./webapp" + url).toPath());
-                response200Header(dos, body.length, url.substring(url.lastIndexOf('.')+1));
-                responseBody(dos, body);
+                HttpResponse httpResponse = new HttpResponse(out, url, "200");
+                httpResponse.response();
             } catch(UnsupportedEncodingException e) {
                 logger.debug("Exception : {}", e.getMessage());
                 return;
             }
-        } catch (IOException e) {
-            logger.error(e.getMessage());
-        }
-    }
-
-    private void response200Header(DataOutputStream dos, int lengthOfBodyContent, String ContentType) {
-        try {
-            dos.writeBytes("HTTP/1.1 200 OK \r\n");
-            dos.writeBytes("Content-Type: text/" + ContentType + ";charset=utf-8\r\n");
-            dos.writeBytes("Content-Length: " + lengthOfBodyContent + "\r\n");
-            dos.writeBytes("\r\n");
-        } catch (IOException e) {
-            logger.error(e.getMessage());
-        }
-    }
-
-    private void responseBody(DataOutputStream dos, byte[] body) {
-        try {
-            dos.write(body, 0, body.length);
-            dos.flush();
         } catch (IOException e) {
             logger.error(e.getMessage());
         }
