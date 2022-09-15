@@ -13,6 +13,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import util.HttpRequestUtils;
 
+import static model.User.createUser;
+
 public class RequestHandler implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
 
@@ -55,22 +57,5 @@ public class RequestHandler implements Runnable {
         } catch (IOException e) {
             logger.error(e.getMessage());
         }
-    }
-
-    /**
-     * @param url 회원가입 버튼 클릭 시 전달되는 url (ex. /create?userId=~~~)
-     * @return User object
-     */
-    private User createUser(String url) throws IllegalArgumentException {
-        int index = url.indexOf("?");
-        String queryString = url.substring(index + 1);
-        Map<String, String> params = HttpRequestUtils.parseQueryString(queryString);
-        EnumUserException enumUserException = User.isValid(params.get("userId"), params.get("password"), params.get("name"), params.get("email"));
-        if ( enumUserException != EnumUserException.VALID_ARGS ) {
-            throw new IllegalArgumentException(enumUserException.getMessage());
-        }
-        User user = new User(params.get("userId"), params.get("password"), params.get("name"), params.get("email"));
-        logger.debug("{}", user);
-        return user;
     }
 }
