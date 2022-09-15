@@ -1,4 +1,4 @@
-package model;
+package exception;
 
 public enum EnumUserException {
     INVALID_USER_ID("userId", "invalid user id"),

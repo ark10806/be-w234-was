@@ -20,9 +20,14 @@ public class HttpRequestUtils {
      * @param firstLine HTTP Request Header의 첫 번째 줄 (ex. "GET /index.html HTTP/1.1")
      * @return url
      */
-    public static String getUrl(String firstLine) throws UnsupportedEncodingException {
+    public static String getUrl(String firstLine) {
         String[] splitted = firstLine.split(" ");
-        String url = URLDecoder.decode(splitted[1], "UTF-8");
+        String url = "/index.html";
+        try {
+            url = URLDecoder.decode(splitted[1], "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            logger.error("UnsupportedEncodingException : {}", e.getMessage());
+        }
         logger.debug("request url : {}", url);
         return url;
     }
