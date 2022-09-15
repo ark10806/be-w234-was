@@ -32,21 +32,24 @@ public class RequestHandler implements Runnable {
             }
 
             String url = HttpRequestUtils.getUrl(line);
-
-            if (url.startsWith("/create?")) {
-                try {
-                    Database.addUser(User.createUser(url));
-                } catch (CreateUserException e) {
-                    logger.debug("CreateUserException : {}", e.getMessage());
-                } finally {
-                    url = "/index.html"; // 회원가입 버튼 클릭 후, "index.html"으로 페이지 이동
-                }
-            }
-
+            url = parseUrl(url);
             HttpResponse httpResponse = new HttpResponse(out, url, "200");
             httpResponse.response();
         } catch (IOException e) {
             logger.error(e.getMessage());
         }
+    }
+
+    private String parseUrl(String url) {
+        if (url.startsWith("/create?")) {
+            try {
+                Database.addUser(User.createUser(url));
+            } catch (CreateUserException e) {
+                logger.debug("CreateUserException : {}", e.getMessage());
+            } finally {
+                url = "/index.html"; // 회원가입 버튼 클릭 후, "index.html"으로 페이지 이동
+            }
+        }
+        return url;
     }
 }
