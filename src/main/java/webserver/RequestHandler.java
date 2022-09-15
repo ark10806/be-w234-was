@@ -4,6 +4,9 @@ import java.io.*;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import model.User;
 import org.slf4j.Logger;
@@ -26,7 +29,7 @@ public class RequestHandler implements Runnable {
             BufferedReader br = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
             DataOutputStream dos = new DataOutputStream(out);
 
-            HttpRequest httpRequest = RequestParser.getHttpRequestFromInput(br.readLine());
+            HttpRequest httpRequest = getHttpRequestFromInput(br);
             byte[] body = processRequest(httpRequest);
 
             response200Header(dos, body.length, httpRequest);
@@ -35,6 +38,20 @@ public class RequestHandler implements Runnable {
             logger.error(e.getMessage());
         }
     }
+
+    private HttpRequest getHttpRequestFromInput(BufferedReader br) throws IOException {
+        String startLine = br.readLine();
+        List<String> headerLines = new ArrayList<>();
+
+        String line = "";
+        while (true) {
+            line = br.readLine();
+            if (line == null || "".equals(line)) break;
+            headerLines.add(line);
+        }
+        return RequestParser.getHttpRequestFromInput(startLine, headerLines);
+    }
+
     // TODO 메서드 명 변경
     private byte[] processRequest(HttpRequest httpRequest) throws IOException {
 
