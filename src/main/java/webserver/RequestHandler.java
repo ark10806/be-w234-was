@@ -2,11 +2,8 @@ package webserver;
 
 import java.io.*;
 import java.net.Socket;
-import java.nio.file.Files;
 import java.util.Map;
 
-import com.github.jknack.handlebars.internal.lang3.StringUtils;
-import com.google.common.base.Charsets;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,10 +25,10 @@ public class RequestHandler implements Runnable {
         printRequest();
 
         try (OutputStream out = connection.getOutputStream()) {
-            DataOutputStream dos = new DataOutputStream(out);
+            ResponseGenerator response = new ResponseGenerator(new DataOutputStream(out));
             byte[] body = generateBody();
-            response200Header(dos, body.length);
-            responseBody(dos, body);
+            String accept = requestParser.headers.get("accept");
+            response.set200Header(body.length).setContentType(accept).setBody(body);
         } catch (IOException e) {
             logger.error(e.getMessage());
         }
@@ -49,25 +46,5 @@ public class RequestHandler implements Runnable {
 
     private byte[] generateBody() {
         return servlet.service(requestParser).getBytes();
-    }
-
-    private void response200Header(DataOutputStream dos, int lengthOfBodyContent) {
-        try {
-            dos.writeBytes("HTTP/1.1 200 OK \r\n");
-            dos.writeBytes("Content-Type: text/html;charset=utf-8\r\n");
-            dos.writeBytes("Content-Length: " + lengthOfBodyContent + "\r\n");
-            dos.writeBytes("\r\n");
-        } catch (IOException e) {
-            logger.error(e.getMessage());
-        }
-    }
-
-    private void responseBody(DataOutputStream dos, byte[] body) {
-        try {
-            dos.write(body, 0, body.length);
-            dos.flush();
-        } catch (IOException e) {
-            logger.error(e.getMessage());
-        }
     }
 }
