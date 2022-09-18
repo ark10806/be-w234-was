@@ -1,6 +1,10 @@
 package http;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 
 public class RequestPacket {
     public ReqHeader header = new ReqHeader();
@@ -14,11 +18,7 @@ public class RequestPacket {
         body.prn();
     }
 
-    public RequestPacket(InputStream in) {
-        // > GET /index.html HTTP/1.1
-        // > Host: ark10806.iptime.org
-        // > User-Agent: curl/7.82.0
-        // > Accept: */*
+    public RequestPacket(final InputStream in) {
         try {
             br = new BufferedReader(new InputStreamReader(in, "UTF-8"));
             parse();

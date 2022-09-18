@@ -2,9 +2,10 @@ package webserver;
 
 import java.io.*;
 import java.net.Socket;
-import java.nio.file.Files;
 
 import http.RequestPacket;
+import webserver.service.Backend;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,7 +30,7 @@ public class RequestHandler implements Runnable {
             reqPacket.prn();
             DataOutputStream dos = new DataOutputStream(out);
             byte[] body = getResource();
-            response200Header(dos, body.length);
+            responseHeader(dos, body.length);
             responseBody(dos, body);
         } catch (IOException e) {
             logger.error(e.getMessage());
@@ -37,14 +38,13 @@ public class RequestHandler implements Runnable {
     }
 
     private byte[] getResource() {
-        backend.route(reqPacket.header.method, reqPacket.header.url, reqPacket.header.params);
-        return backend.getResponse();
+        return backend.route(reqPacket.header.method, reqPacket.header.url, reqPacket.header.params);
     }
 
-    private void response200Header(DataOutputStream dos, int lengthOfBodyContent) {
+    private void responseHeader(DataOutputStream dos, int lengthOfBodyContent) {
         try {
-            dos.writeBytes("HTTP/1.1 200 OK \r\n");
-            dos.writeBytes("Content-Type: text/html;charset=utf-8\r\n");
+            dos.writeBytes("HTTP/1.1 " + backend.getHttpStatusCode() + " " + backend.getHttpStatusMessage() +" \r\n");
+            dos.writeBytes("Content-Type: " + reqPacket.header.entity.get("Accept:") + "\r\n");
             dos.writeBytes("Content-Length: " + lengthOfBodyContent + "\r\n");
             dos.writeBytes("\r\n");
         } catch (IOException e) {
