@@ -24,6 +24,7 @@ public class ResponsePacket {
 	public void flush() {
 		try {
 			dos.flush();
+			dos.close();
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
