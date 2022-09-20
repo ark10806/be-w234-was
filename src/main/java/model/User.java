@@ -7,10 +7,14 @@ public class User {
     private String email;
 
     public User(String userId, String password, String name, String email) {
-        this.userId = userId;
-        this.password = password;
-        this.name = name;
-        this.email = email;
+        if (userId != null && password != null && name != null && email != null) {
+            this.userId = userId;
+            this.password = password;
+            this.name = name;
+            this.email = email;
+        } else {
+            throw new IllegalArgumentException(toString() + " are not valid arguments.");
+        }
     }
 
     public String getUserId() {

@@ -1,16 +1,18 @@
 package webserver.service;
 
-import db.Database;
-import model.User;
+import http.RequestPacket;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import webserver.RequestHandler;
-import webserver.service.HttpStatus;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
 
@@ -19,21 +21,26 @@ public class Backend {
     private final String rootDir = "./webapp/";
     private Map<String, Runnable> path = new HashMap<>();
     private Map<String, String> params;
-    private Database db = new Database();
+    private String method;
     private HttpStatus httpStatus;
     private byte[] view = "404 resource not found".getBytes();
+    private RequestPacket requestPacket;
+    private List<String> responseEntity = new ArrayList<>();
 
 
-    public Backend() {
+    public Backend(RequestPacket requestPacket) {
+        // responseEntity.put("Content-Type", requestPacket.header.entity.get("Accept:"));
         path.put("/user/create", () -> userCreate());
+        path.put("/user/login", () -> userLogin());
+        this.requestPacket = requestPacket;
     }
 
-    public byte[] route(final String method, final String url, final Map<String, String> params) {
+    public byte[] route() {
         try {
-            this.view = routeView(url);
-            if (path.containsKey(url)) {
-                setParams(params);
-                path.get(url).run();
+            this.view = routeView(requestPacket.header.url);
+            this.method = requestPacket.header.method;
+            if (path.containsKey(requestPacket.header.url)) {
+                path.get(requestPacket.header.url).run();
             }
         } catch (Exception e) {
             logger.debug(e.getMessage());
@@ -61,19 +68,31 @@ public class Backend {
     public String getHttpStatusMessage() {
         return httpStatus.getMessage();
     }
+    public List<String> getResponseEntity() { return this.responseEntity; }
 
-    private void setParams(Map<String, String> params) {
-        this.params = params;
-    }
 
     private void userCreate() {
-        db.addUser(new User(
-                params.get("userId"),
-                params.get("password"),
-                params.get("name"),
-                params.get("email")
-        ));
-        this.view = routeView("/index.html");
-        this.httpStatus = HttpStatus.CREATED;
+        try {
+            UserCreateServlet userCreateServlet = new UserCreateServlet();
+            userCreateServlet.init(requestPacket);
+            this.httpStatus = HttpStatus.FOUND;
+            this.responseEntity.add("Location: /user/login.html");
+        } catch (IllegalArgumentException e) {
+            this.view = e.getMessage().getBytes();
+            this.httpStatus = HttpStatus.BAD_REQUEST;
+        }
+    }
+
+    private void userLogin() {
+        try {
+           UserLoginServlet userLoginServlet = new UserLoginServlet();
+           userLoginServlet.init(requestPacket);
+           this.httpStatus = HttpStatus.FOUND;
+           this.responseEntity.add("Location: /index.html");
+           this.responseEntity.add("Set-Cookie: logined=true; Path=/");
+        } catch (IllegalArgumentException e) {
+            this.view = routeView("/user/login_failed.html");
+            this.httpStatus = HttpStatus.UNAUTHORIZED;
+        }
     }
 }

@@ -3,6 +3,7 @@ package webserver.service;
 public enum HttpStatus {
     OK(200, "OK"),
     CREATED(201, "New resource created as a result"),
+    FOUND(302, "Redirection"),
     BAD_REQUEST(400, "Server cannot or will not process the request"),
     UNAUTHORIZED(401, "Unauthorized client"),
     FORBIDDEN(403, "Client does not have access rights to the content."),

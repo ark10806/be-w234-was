@@ -14,7 +14,7 @@ public class RequestHandler implements Runnable {
 
     private Socket connection;
     private RequestPacket reqPacket;
-    private Backend backend = new Backend();
+    private Backend backend;
 
     public RequestHandler(Socket connectionSocket) {
         this.connection = connectionSocket;
@@ -28,6 +28,7 @@ public class RequestHandler implements Runnable {
             // TODO 사용자 요청에 대한 처리는 이 곳에 구현하면 된다.
             reqPacket = new RequestPacket(in);
             reqPacket.prn();
+            backend = new Backend(reqPacket);
             DataOutputStream dos = new DataOutputStream(out);
             byte[] body = getResource();
             responseHeader(dos, body.length);
@@ -38,7 +39,7 @@ public class RequestHandler implements Runnable {
     }
 
     private byte[] getResource() {
-        return backend.route(reqPacket.header.method, reqPacket.header.url, reqPacket.header.params);
+        return backend.route();
     }
 
     private void responseHeader(DataOutputStream dos, int lengthOfBodyContent) {
@@ -46,6 +47,9 @@ public class RequestHandler implements Runnable {
             dos.writeBytes("HTTP/1.1 " + backend.getHttpStatusCode() + " " + backend.getHttpStatusMessage() +" \r\n");
             dos.writeBytes("Content-Type: " + reqPacket.header.entity.get("Accept:") + "\r\n");
             dos.writeBytes("Content-Length: " + lengthOfBodyContent + "\r\n");
+            for (String line : backend.getResponseEntity()) {
+                dos.writeBytes(line + "\r\n");
+            }
             dos.writeBytes("\r\n");
         } catch (IOException e) {
             logger.error(e.getMessage());

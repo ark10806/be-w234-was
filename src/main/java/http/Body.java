@@ -1,14 +1,23 @@
 package http;
 
-public class Body {
-    public String content = "";
+import java.util.HashMap;
+import java.util.Map;
 
-    public void append(String line) {
-        // Todo: Doubling 가능할까?
-        content = content + line;
+public class Body {
+    public Map<String, String> params = new HashMap<>();
+
+    public void parseParams(String queryString) {
+        for (String param : queryString.split("&")) {
+            String[] kv = param.split("\\=");
+            if (kv.length == 2) {
+                this.params.put(kv[0], kv[1]);
+            } else {
+                this.params.put(kv[0], null);
+            }
+        }
     }
 
     public void prn() {
-        System.out.println(content);
+        System.out.println("Body: " + params);
     }
 }

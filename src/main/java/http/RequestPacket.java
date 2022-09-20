@@ -7,7 +7,7 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 
 public class RequestPacket {
-    public ReqHeader header = new ReqHeader();
+    public RequestHeader header = new RequestHeader();
     public Body body = new Body();
     private BufferedReader br;
     private String line;
@@ -50,9 +50,21 @@ public class RequestPacket {
     private void parseEntityHeader() {
         try {
             line = br.readLine();
-            while (!line.equals("")) {
+            while (!line.equals("") && line != null) {
                 lineitem = line.split(" ");
-                this.header.entity.put(lineitem[0], lineitem[1]);
+                String[] tmp = this.header.url.split("\\.");
+                if (lineitem[0].equals("Accept:") && tmp.length>=2) {
+                    String property = tmp[tmp.length-1];
+                    if (property.equals("html")) {
+                        this.header.entity.put(lineitem[0], "text/html");
+                    } else if (property.equals("css")) {
+                        this.header.entity.put(lineitem[0], "text/css");
+                    } else {
+                        this.header.entity.put(lineitem[0], "*/*");
+                    }
+                } else {
+                    this.header.entity.put(lineitem[0], lineitem[1]);
+                }
                 line = br.readLine();
             }
         } catch (IOException e) {
@@ -62,12 +74,11 @@ public class RequestPacket {
 
     private void parseBody() {
         try {
-            if (br.ready()) {
-                line = br.readLine();
-                while (line != null) {
-                    this.body.append("line\n");
-                    br.readLine();
-                }
+            if (this.header.entity.containsKey("Content-Length:")) {
+                int contentLen = Integer.parseInt(this.header.entity.get("Content-Length:"));
+                char[] body = new char[contentLen];
+                br.read(body, 0, contentLen);
+                this.body.parseParams(String.copyValueOf(body));
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
