@@ -81,6 +81,7 @@ public class RequestPacket {
                 char[] body = new char[contentLen];
                 br.read(body, 0, contentLen);
                 this.body.parseParams(String.copyValueOf(body));
+                br.close();;
             }
         } catch (IOException e) {
             throw new RuntimeException(e);

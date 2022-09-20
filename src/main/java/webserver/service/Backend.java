@@ -16,28 +16,24 @@ import webserver.RequestHandler;
 public class Backend {
     private final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
     private final String rootDir = "./webapp/";
-    private Map<String, Runnable> path = new HashMap<>();
-    private Map<String, String> params;
-    private String method;
+    private Map<String, Runnable> router = new HashMap<>();
     private HttpStatus httpStatus;
-    private byte[] view = "404 resource not found".getBytes();
+    private String view = "404 resource not found";
     private RequestPacket requestPacket;
     private List<String> responseEntity = new ArrayList<>();
 
 
     public Backend(RequestPacket requestPacket) {
-        // responseEntity.put("Content-Type", requestPacket.header.entity.get("Accept:"));
-        path.put("/user/create", () -> userCreate());
-        path.put("/user/login", () -> userLogin());
+        router.put("/user/create", () -> userCreate());
+        router.put("/user/login", () -> userLogin());
         this.requestPacket = requestPacket;
     }
 
-    public byte[] route() {
+    public String route() {
         try {
             this.view = routeView(requestPacket.header.url);
-            this.method = requestPacket.header.method;
-            if (path.containsKey(requestPacket.header.url)) {
-                path.get(requestPacket.header.url).run();
+            if (router.containsKey(requestPacket.header.url)) {
+                router.get(requestPacket.header.url).run();
             }
         } catch (Exception e) {
             logger.debug(e.getMessage());
@@ -47,14 +43,14 @@ public class Backend {
         }
     }
 
-    private byte[] routeView(String url) {
+    private String routeView(String url) {
         try {
             this.httpStatus = HttpStatus.OK;
-            return Files.readAllBytes(new File(rootDir + url).toPath());
+            return Files.readString(new File(rootDir + url).toPath());
         } catch (IOException e) {
             logger.debug("routeView: {}", e.getMessage());
             this.httpStatus = HttpStatus.NOT_FOUND;
-            return "404 not found".getBytes();
+            return "404 not found";
         }
     }
 
@@ -78,7 +74,7 @@ public class Backend {
             this.httpStatus = HttpStatus.FOUND;
             this.responseEntity.add("Location: /user/login.html");
         } catch (IllegalArgumentException e) {
-            this.view = e.getMessage().getBytes();
+            this.view = e.getMessage();
             this.httpStatus = HttpStatus.BAD_REQUEST;
         }
     }

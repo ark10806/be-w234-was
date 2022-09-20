@@ -8,6 +8,8 @@ import java.io.OutputStream;
 import java.net.Socket;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import http.ResponsePacket;
 import webserver.service.Backend;
 
 public class RequestHandler implements Runnable {
@@ -15,6 +17,7 @@ public class RequestHandler implements Runnable {
 
     private Socket connection;
     private RequestPacket reqPacket;
+    private ResponsePacket resPacket;
     private Backend backend;
 
     public RequestHandler(Socket connectionSock) {
@@ -30,35 +33,16 @@ public class RequestHandler implements Runnable {
             // TODO 사용자 요청에 대한 처리는 이 곳에 구현하면 된다.
             reqPacket = new RequestPacket(in);
             reqPacket.prn();
+
             backend = new Backend(reqPacket);
-            DataOutputStream dos = new DataOutputStream(out);
-            byte[] body = backend.route();
-            responseHeader(dos, body.length);
-            responseBody(dos, body);
-        } catch (IOException e) {
-            logger.error(e.getMessage());
-        }
-    }
 
-    private void responseHeader(DataOutputStream dos, int lengthOfBodyContent) {
-        try {
-            dos.writeBytes("HTTP/1.1 " + backend.getHttpStatusCode() + " "
-                + backend.getHttpStatusMessage() + " \r\n");
-            dos.writeBytes("Content-Type: " + reqPacket.header.entity.get("Accept:") + "\r\n");
-            dos.writeBytes("Content-Length: " + lengthOfBodyContent + "\r\n");
-            for (String line : backend.getResponseEntity()) {
-                dos.writeBytes(line + "\r\n");
-            }
-            dos.writeBytes("\r\n");
-        } catch (IOException e) {
-            logger.error(e.getMessage());
-        }
-    }
-
-    private void responseBody(DataOutputStream dos, byte[] body) {
-        try {
-            dos.write(body, 0, body.length);
-            dos.flush();
+            resPacket = new ResponsePacket(out);
+            resPacket.write(
+                backend,
+                reqPacket.header.entity.get("Accept:"),
+                backend.route().getBytes()
+            );
+            resPacket.flush();
         } catch (IOException e) {
             logger.error(e.getMessage());
         }
