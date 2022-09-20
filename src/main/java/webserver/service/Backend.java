@@ -1,21 +1,18 @@
 package webserver.service;
 
 import http.RequestPacket;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import webserver.RequestHandler;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.HashMap;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import webserver.RequestHandler;
 
+//
 public class Backend {
     private final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
     private final String rootDir = "./webapp/";
@@ -68,7 +65,10 @@ public class Backend {
     public String getHttpStatusMessage() {
         return httpStatus.getMessage();
     }
-    public List<String> getResponseEntity() { return this.responseEntity; }
+
+    public List<String> getResponseEntity() {
+        return this.responseEntity;
+    }
 
 
     private void userCreate() {

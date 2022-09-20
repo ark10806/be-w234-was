@@ -1,7 +1,5 @@
 package webserver.service;
 
-import java.util.Map;
-
 import http.RequestPacket;
 
 public interface Servlet {

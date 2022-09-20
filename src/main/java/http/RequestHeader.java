@@ -3,6 +3,7 @@ package http;
 import java.util.HashMap;
 import java.util.Map;
 
+// HTTP request header 를 구조화한 클래스
 public class RequestHeader {
     public String method;
     public String url;
@@ -10,15 +11,7 @@ public class RequestHeader {
     public String httpVersion;
     public HashMap<String, String> entity = new HashMap<>();
 
-    // 1개의 요청 -> 1개의 HttpPacket -> 1개의 스레드 이므로 clear로 재활용을 기대하기는 어려울듯?
-    // 아마도 필요없는 메서드
-    public void clear() {
-        method = "";
-        url = "";
-        httpVersion = "";
-        entity.clear();
-    }
-
+    // header 에서 Host(URI; FQDN)을 파싱
     public void setUrl(String path) {
         String[] lineitem = path.split("\\?");
         this.url = lineitem[0];
@@ -27,6 +20,7 @@ public class RequestHeader {
         }
     }
 
+    // header.Host 에서 Querystring 파싱
     public void parseParams(String queryString) {
         for (String param : queryString.split("&")) {
             String[] kv = param.split("\\=");
@@ -37,6 +31,8 @@ public class RequestHeader {
             }
         }
     }
+
+    // 파싱한 querystring 을 출력
     public void prn() {
         System.out.printf("%s %s %s\n", method, url, httpVersion);
         entity.forEach((key, value) -> {

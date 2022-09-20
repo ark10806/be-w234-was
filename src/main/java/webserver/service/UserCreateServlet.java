@@ -7,6 +7,7 @@ import model.User;
 public class UserCreateServlet implements Servlet {
 	private Database db = new Database();
 	private RequestPacket requestPacket;
+
 	@Override
 	public void init(RequestPacket requestPacket) {
 		this.requestPacket = requestPacket;
@@ -23,6 +24,7 @@ public class UserCreateServlet implements Servlet {
 			destroy();
 		}
 	}
+
 	@Override
 	public void doGet() {
 		try {
@@ -36,6 +38,7 @@ public class UserCreateServlet implements Servlet {
 			throw e;
 		}
 	}
+
 	@Override
 	public void doPost() {
 		try {
@@ -49,6 +52,7 @@ public class UserCreateServlet implements Servlet {
 			throw e;
 		}
 	}
+
 	@Override
 	public void destroy() {
 	}

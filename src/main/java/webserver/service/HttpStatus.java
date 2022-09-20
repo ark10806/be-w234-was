@@ -8,10 +8,11 @@ public enum HttpStatus {
     UNAUTHORIZED(401, "Unauthorized client"),
     FORBIDDEN(403, "Client does not have access rights to the content."),
     NOT_FOUND(404, "Server can not find requested resource."),
-    INTERNAL_SERVER_ERROR(500, "The server has encountered a situation it does not know how to handle.");
+    INTERNAL_SERVER_ERROR(500, "Server does not know how to handle.");
 
     private int statusCode;
     private String message;
+
     HttpStatus(int statusCode, String message) {
         this.statusCode = statusCode;
         this.message = message;

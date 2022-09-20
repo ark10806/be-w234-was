@@ -1,8 +1,8 @@
 package http;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 
@@ -37,6 +37,7 @@ public class RequestPacket {
     private void parseGeneralHeader() {
 
     }
+
     private void parseSpecialHeader() {
         try {
             lineitem = br.readLine().split(" ");
@@ -47,14 +48,15 @@ public class RequestPacket {
             throw new RuntimeException(e);
         }
     }
+
     private void parseEntityHeader() {
         try {
             line = br.readLine();
             while (!line.equals("") && line != null) {
                 lineitem = line.split(" ");
                 String[] tmp = this.header.url.split("\\.");
-                if (lineitem[0].equals("Accept:") && tmp.length>=2) {
-                    String property = tmp[tmp.length-1];
+                if (lineitem[0].equals("Accept:") && tmp.length >= 2) {
+                    String property = tmp[tmp.length - 1];
                     if (property.equals("html")) {
                         this.header.entity.put(lineitem[0], "text/html");
                     } else if (property.equals("css")) {
