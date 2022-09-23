@@ -4,6 +4,7 @@ import http.RequestPacket;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.FileSystemNotFoundException;
 import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.Map;
@@ -50,12 +51,9 @@ public class Backend {
     private String routeView(String url) {
         try {
             return Files.readString(new File(rootDir + url).toPath());
-        } catch (FileNotFoundException e) {
-            logger.error("routeView: {}", e.getMessage());
-            return HttpStatus.NOT_FOUND.getMessage();
         } catch (IOException e) {
             logger.error("routeView: {}", e.getMessage());
-            return HttpStatus.INTERNAL_SERVER_ERROR.getMessage();
+            return HttpStatus.NOT_FOUND.getMessage();
         }
     }
 }

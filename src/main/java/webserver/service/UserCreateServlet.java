@@ -19,9 +19,8 @@ public class UserCreateServlet extends Servlet {
 			return responsePacket;
 		} catch (IllegalArgumentException e) {
 			responsePacket.setHttpStatus(HttpStatus.BAD_REQUEST);
-			view = "Sign up failed";
+			responsePacket.setBody(HttpStatus.BAD_REQUEST.getMessage());
 		} finally {
-			responsePacket.setBody(view);
 			destroy();
 			return responsePacket;
 		}

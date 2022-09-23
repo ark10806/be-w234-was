@@ -18,8 +18,8 @@ public class Servlet implements ServletInterface {
 		try {
 			return Files.readString(new File(rootDir + url).toPath());
 		} catch (IOException e) {
-			logger.debug("routeView: {}", e.getMessage());
-			return "404 not found";
+			logger.error("routeView: {}", e.getMessage());
+			return HttpStatus.NOT_FOUND.getMessage();
 		}
 	}
 
