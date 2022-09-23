@@ -43,6 +43,7 @@ public class Backend {
         } catch (Exception e) {
             logger.debug(e.getMessage());
             responsePacket.setHttpStatus(HttpStatus.INTERNAL_SERVER_ERROR);
+            responsePacket.setBody(HttpStatus.INTERNAL_SERVER_ERROR.getMessage());
         } finally {
             return responsePacket;
         }
