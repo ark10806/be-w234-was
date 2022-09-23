@@ -19,8 +19,9 @@ public class UserLoginServlet extends Servlet {
 			responsePacket.addEntity("Set-Cookie: logined=true; Path=/");
 			return responsePacket;
 		} catch (IllegalArgumentException e) {
-			responsePacket.setHttpStatus(HttpStatus.INTERNAL_SERVER_ERROR);
-			view = routeView("/user/login_failed.html");
+			responsePacket.setHttpStatus(HttpStatus.FOUND);
+			responsePacket.addEntity("Location: /user/login_failed.html");
+			// view = routeView("/user/login_failed.html");
 		} finally {
 			responsePacket.setBody(view);
 			destroy();

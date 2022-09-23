@@ -13,12 +13,6 @@ public class RequestPacket {
     private String line;
     private String[] lineitem;
 
-    public void prn() {
-        System.out.println("\n############################\nRequest Packet:");
-        header.prn();
-        body.prn();
-    }
-
     public RequestPacket(final InputStream in) {
         try {
             br = new BufferedReader(new InputStreamReader(in, "UTF-8"));
@@ -26,6 +20,12 @@ public class RequestPacket {
         } catch (UnsupportedEncodingException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public void prn() {
+        System.out.println("\n############################\nRequest Packet:");
+        header.prn();
+        body.prn();
     }
 
     private void parse() {
