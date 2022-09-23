@@ -37,11 +37,14 @@ public class RequestHandler implements Runnable {
             resPacket = backend.route();
             resPacket.flush();
             resPacket.prn();
-
-            out.close();
-            in.close();
         } catch (IOException e) {
             logger.error(e.getMessage());
+        } finally {
+            try {
+                connection.close();
+            } catch (IOException e) {
+                logger.error(e.getMessage());
+            }
         }
     }
 }

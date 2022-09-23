@@ -29,24 +29,28 @@ public class RequestPacket {
     }
 
     private void parse() {
-        parseGeneralHeader();
-        parseSpecialHeader();
-        parseEntityHeader();
-        parseBody();
+        try {
+            parseGeneralHeader();
+            parseSpecialHeader();
+            parseEntityHeader();
+            parseBody();
+        } catch (IOException e) {
+
+        }
     }
 
     private void parseGeneralHeader() {
 
     }
 
-    private void parseSpecialHeader() {
+    private void parseSpecialHeader() throws IOException {
         try {
             lineitem = br.readLine().split(" ");
             this.header.method = lineitem[0];
             this.header.setUrl(lineitem[1]);
             this.header.httpVersion = lineitem[2];
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw e;
         }
     }
 

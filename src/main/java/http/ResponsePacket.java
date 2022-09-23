@@ -11,7 +11,7 @@ import webserver.RequestHandler;
 import webserver.service.HttpStatus;
 
 public class ResponsePacket {
-	private String httpVersion = "1.1";
+	private String httpVersion;
 	private int httpStatusCode = HttpStatus.OK.getStatusCode();
 	private String httpStatusMessage = HttpStatus.OK.getMessage();
 	private String contentType;
@@ -26,7 +26,7 @@ public class ResponsePacket {
 
 	public void prn() {
 		System.out.println("\n############################\nRes Packet:");
-		System.out.println(String.format("HTTP/%s %d %s", httpVersion, httpStatusCode, httpStatusMessage));
+		System.out.println(String.format("%s %d %s", httpVersion, httpStatusCode, httpStatusMessage));
 		System.out.println(String.format("Content-Type: %s", contentType));
 		System.out.println(String.format("Content-Length: " + body.length));
 		for (String line :  entities) {
@@ -45,7 +45,7 @@ public class ResponsePacket {
 
 	void writeHeader() {
 		try {
-			dos.writeBytes(String.format("HTTP/%s %d %s \r\n",
+			dos.writeBytes(String.format("%s %d %s \r\n",
 				httpVersion, httpStatusCode, httpStatusMessage));
 			dos.writeBytes(String.format("Content-Type: %s \r\n",
 				contentType));
@@ -62,10 +62,12 @@ public class ResponsePacket {
 		try {
 			writeHeader();
 			dos.writeBytes("\r\n");
+			if ( 400 <= httpStatusCode && httpStatusCode < 600) {
+				setBody(httpStatusMessage);
+			}
 			dos.write(body, 0, body.length);
 
 			dos.flush();
-			dos.close();
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}

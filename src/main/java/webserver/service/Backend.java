@@ -31,6 +31,7 @@ public class Backend {
     public ResponsePacket route() {
         try {
             String url = requestPacket.header.url;
+            responsePacket.setHttpVersion(requestPacket.header.httpVersion);
             responsePacket.setBody(routeView(url));
             responsePacket.setContentType(requestPacket.header.entity.get("Accept:"));
             if (router.containsKey(url)) {
