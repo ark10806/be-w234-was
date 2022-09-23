@@ -1,15 +1,13 @@
 package webserver;
 
 import http.RequestPacket;
-import java.io.DataOutputStream;
+import http.ResponsePacket;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import http.ResponsePacket;
 import webserver.service.Backend;
 
 public class RequestHandler implements Runnable {
@@ -34,15 +32,12 @@ public class RequestHandler implements Runnable {
             reqPacket = new RequestPacket(in);
             reqPacket.prn();
 
-            backend = new Backend(reqPacket);
-
             resPacket = new ResponsePacket(out);
-            resPacket.write(
-                backend,
-                reqPacket.header.entity.get("Accept:"),
-                backend.route().getBytes()
-            );
+            backend = new Backend(reqPacket, resPacket);
+            resPacket = backend.route();
             resPacket.flush();
+            resPacket.prn();
+
         } catch (IOException e) {
             logger.error(e.getMessage());
         }

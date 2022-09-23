@@ -1,16 +1,12 @@
 package webserver.service;
 
-import db.Database;
-import http.RequestPacket;
+import http.ResponsePacket;
 import model.User;
 
-public class UserCreateServlet implements Servlet {
-	private Database db = new Database();
-	private RequestPacket requestPacket;
+public class UserCreateServlet extends Servlet {
 
 	@Override
-	public void init(RequestPacket requestPacket) {
-		this.requestPacket = requestPacket;
+	public ResponsePacket run() {
 		try {
 			if ("GET".equals(requestPacket.header.method)) {
 				doGet();
@@ -18,10 +14,16 @@ public class UserCreateServlet implements Servlet {
 			if ("POST".equals(requestPacket.header.method)) {
 				doPost();
 			}
+			responsePacket.setHttpStatus(HttpStatus.FOUND);
+			responsePacket.addEntity("Location: /user/login.html");
+			return responsePacket;
 		} catch (IllegalArgumentException e) {
-			throw e;
+			responsePacket.setHttpStatus(HttpStatus.BAD_REQUEST);
+			view = "Sign up failed";
 		} finally {
+			responsePacket.setBody(view);
 			destroy();
+			return responsePacket;
 		}
 	}
 
@@ -29,10 +31,10 @@ public class UserCreateServlet implements Servlet {
 	public void doGet() {
 		try {
 			db.addUser(new User(
-				requestPacket.header.params.get("userId"),
-				requestPacket.header.params.get("password"),
-				requestPacket.header.params.get("name"),
-				requestPacket.header.params.get("email")
+				requestPacket.header.queryString.get("userId"),
+				requestPacket.header.queryString.get("password"),
+				requestPacket.header.queryString.get("name"),
+				requestPacket.header.queryString.get("email")
 			));
 		} catch (IllegalArgumentException e) {
 			throw e;

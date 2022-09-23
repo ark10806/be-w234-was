@@ -7,7 +7,7 @@ import java.util.Map;
 public class RequestHeader {
     public String method;
     public String url;
-    public Map<String, String> params = new HashMap<>();
+    public Map<String, String> queryString = new HashMap<>();
     public String httpVersion;
     public HashMap<String, String> entity = new HashMap<>();
 
@@ -25,9 +25,9 @@ public class RequestHeader {
         for (String param : queryString.split("&")) {
             String[] kv = param.split("\\=");
             if (kv.length == 2) {
-                this.params.put(kv[0], kv[1]);
+                this.queryString.put(kv[0], kv[1]);
             } else {
-                this.params.put(kv[0], null);
+                this.queryString.put(kv[0], null);
             }
         }
     }

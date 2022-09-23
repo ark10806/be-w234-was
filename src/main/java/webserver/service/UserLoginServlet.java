@@ -1,16 +1,12 @@
 package webserver.service;
 
-import db.Database;
-import http.RequestPacket;
+import http.ResponsePacket;
 import model.User;
 
-public class UserLoginServlet implements Servlet {
-	private Database db = new Database();
-	private RequestPacket requestPacket;
+public class UserLoginServlet extends Servlet {
 
 	@Override
-	public void init(RequestPacket requestPacket) {
-		this.requestPacket = requestPacket;
+	public ResponsePacket run() {
 		try {
 			if ("GET".equals(requestPacket.header.method)) {
 				doGet();
@@ -18,19 +14,28 @@ public class UserLoginServlet implements Servlet {
 			if ("POST".equals(requestPacket.header.method)) {
 				doPost();
 			}
+			responsePacket.setHttpStatus(HttpStatus.FOUND);
+			responsePacket.addEntity("Location: /index.html");
+			responsePacket.addEntity("Set-Cookie: logined=true; Path=/");
+			return responsePacket;
 		} catch (IllegalArgumentException e) {
-			throw e;
+			responsePacket.setHttpStatus(HttpStatus.INTERNAL_SERVER_ERROR);
+			view = routeView("/user/login_failed.html");
+		} finally {
+			responsePacket.setBody(view);
+			destroy();
+			return responsePacket;
 		}
 	}
 
 	@Override
 	public void doGet() {
 		try {
-			User criteria = db.findUserById(requestPacket.header.params.get("userId"));
+			User criteria = db.findUserById(requestPacket.header.queryString.get("userId"));
 			if (criteria == null) {
 				throw new IllegalArgumentException("invalid userId");
 			}
-			if (!criteria.getPassword().equals(requestPacket.header.params.get("password"))) {
+			if (!criteria.getPassword().equals(requestPacket.header.queryString.get("password"))) {
 				throw new IllegalArgumentException("wrong userId or password");
 			}
 		} catch (IllegalArgumentException e) {
