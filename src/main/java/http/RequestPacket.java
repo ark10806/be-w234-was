@@ -13,7 +13,7 @@ public class RequestPacket {
     private String line;
     private String[] lineitem;
 
-    public RequestPacket(final InputStream in) {
+    public RequestPacket(InputStream in) {
         try {
             br = new BufferedReader(new InputStreamReader(in, "UTF-8"));
             parse();
@@ -87,4 +87,5 @@ public class RequestPacket {
             throw new RuntimeException(e);
         }
     }
+
 }

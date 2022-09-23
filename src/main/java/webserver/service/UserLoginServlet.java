@@ -21,7 +21,6 @@ public class UserLoginServlet extends Servlet {
 		} catch (IllegalArgumentException e) {
 			responsePacket.setHttpStatus(HttpStatus.FOUND);
 			responsePacket.addEntity("Location: /user/login_failed.html");
-			// view = routeView("/user/login_failed.html");
 		} finally {
 			responsePacket.setBody(view);
 			destroy();

@@ -38,6 +38,8 @@ public class RequestHandler implements Runnable {
             resPacket.flush();
             resPacket.prn();
 
+            out.close();
+            in.close();
         } catch (IOException e) {
             logger.error(e.getMessage());
         }
