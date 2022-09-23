@@ -16,7 +16,6 @@ import webserver.RequestHandler;
 public class Backend {
     private final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
     private Map<String, Servlet> router = new HashMap<>();
-    private String view = "404 resource not found";
     String rootDir = "./webapp/";
     private RequestPacket requestPacket;
     private ResponsePacket responsePacket;
