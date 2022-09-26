@@ -1,9 +1,13 @@
 package webserver.service;
 
+import db.Database;
 import http.ResponsePacket;
+import model.Session;
 import model.User;
 
 public class UserCreateServlet extends Servlet {
+
+	public UserCreateServlet(Database db, Session session) { super(db, session); }
 
 	@Override
 	public ResponsePacket run() {

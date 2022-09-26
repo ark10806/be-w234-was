@@ -1,13 +1,18 @@
 package webserver;
 
+import db.Database;
 import http.RequestPacket;
 import http.ResponsePacket;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
+
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import model.Session;
 import webserver.service.Backend;
 
 public class RequestHandler implements Runnable {
@@ -17,9 +22,13 @@ public class RequestHandler implements Runnable {
     private RequestPacket reqPacket;
     private ResponsePacket resPacket;
     private Backend backend;
+    private Database db;
+    private Session session;
 
-    public RequestHandler(Socket connectionSock) {
+    public RequestHandler(Socket connectionSock, Database db, Session session) {
         this.connection = connectionSock;
+        this.db = db;
+        this.session = session;
     }
 
     public void run() {
@@ -33,7 +42,7 @@ public class RequestHandler implements Runnable {
             reqPacket.prn();
 
             resPacket = new ResponsePacket(out);
-            backend = new Backend(reqPacket, resPacket);
+            backend = new Backend(reqPacket, resPacket, db, session);
             resPacket = backend.route();
             resPacket.flush();
             resPacket.prn();

@@ -1,6 +1,6 @@
 package model;
 
-public class User {
+public class User implements Comparable<User> {
     private String userId;
     private String password;
     private String name;
@@ -16,7 +16,10 @@ public class User {
             throw new IllegalArgumentException(toString() + " are not valid arguments.");
         }
     }
-
+    @Override
+    public int compareTo(User u) {
+        return this.userId.compareTo(u.userId);
+    }
     public String getUserId() {
         return userId;
     }

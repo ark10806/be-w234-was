@@ -10,6 +10,7 @@ public class RequestHeader {
     public Map<String, String> queryString = new HashMap<>();
     public String httpVersion;
     public HashMap<String, String> entity = new HashMap<>();
+    public Cookie cookie;
 
     // header 에서 Host(URI; FQDN)을 파싱
     public void setUrl(String path) {

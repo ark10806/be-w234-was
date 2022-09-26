@@ -69,6 +69,8 @@ public class RequestPacket {
                     } else {
                         this.header.entity.put(lineitem[0], "*/*");
                     }
+                } else if (lineitem[0].equals("Cookie:")) {
+                    this.header.cookie = new Cookie(line);
                 } else {
                     this.header.entity.put(lineitem[0], lineitem[1]);
                 }

@@ -1,5 +1,6 @@
 package webserver.service;
 
+import db.Database;
 import http.RequestPacket;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -13,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import http.ResponsePacket;
+import model.Session;
 import webserver.RequestHandler;
 
 public class Backend {
@@ -23,9 +25,11 @@ public class Backend {
     private ResponsePacket responsePacket;
 
 
-    public Backend(RequestPacket requestPacket, ResponsePacket responsePacket) {
-        router.put("/user/create", new UserCreateServlet());
-        router.put("/user/login", new UserLoginServlet());
+    public Backend(RequestPacket requestPacket, ResponsePacket responsePacket,
+        Database db, Session sessions) {
+        router.put("/user/create", new UserCreateServlet(db, sessions));
+        router.put("/user/login", new UserLoginServlet(db, sessions));
+        router.put("/user/list.html", new UserListServlet(db, sessions));
         this.requestPacket = requestPacket;
         this.responsePacket = responsePacket;
     }
@@ -53,7 +57,7 @@ public class Backend {
         try {
             return Files.readString(new File(rootDir + url).toPath());
         } catch (IOException e) {
-            logger.error("routeView: {}", e.getMessage());
+            logger.error("Backend.routeView: {} on {}", e.getMessage(), url);
             return HttpStatus.NOT_FOUND.getMessage();
         }
     }

@@ -1,9 +1,16 @@
 package webserver.service;
 
+import db.Database;
 import http.ResponsePacket;
+import model.Session;
 import model.User;
 
 public class UserLoginServlet extends Servlet {
+	String uid;
+
+	public UserLoginServlet(Database db, Session session) {
+		super(db, session);
+	}
 
 	@Override
 	public ResponsePacket run() {
@@ -16,7 +23,9 @@ public class UserLoginServlet extends Servlet {
 			}
 			responsePacket.setHttpStatus(HttpStatus.FOUND);
 			responsePacket.addEntity("Location: /index.html");
-			responsePacket.addEntity("Set-Cookie: logined=true; Path=/");
+			responsePacket.addEntity(String.format("Set-Cookie: logined=%s; Path=/",
+				uid));
+			sessions.put(uid);
 			return responsePacket;
 		} catch (IllegalArgumentException e) {
 			responsePacket.setHttpStatus(HttpStatus.FOUND);
@@ -30,8 +39,9 @@ public class UserLoginServlet extends Servlet {
 
 	@Override
 	public void doGet() {
+		this.uid = requestPacket.header.queryString.get("userId");
 		try {
-			User criteria = db.findUserById(requestPacket.header.queryString.get("userId"));
+			User criteria = db.findUserById(this.uid);
 			if (criteria == null) {
 				throw new IllegalArgumentException("invalid userId");
 			}
@@ -45,8 +55,9 @@ public class UserLoginServlet extends Servlet {
 
 	@Override
 	public void doPost() {
+		this.uid = requestPacket.body.params.get("userId");
 		try {
-			User criteria = db.findUserById(requestPacket.body.params.get("userId"));
+			User criteria = db.findUserById(this.uid);
 			if (criteria == null) {
 				throw new IllegalArgumentException("invalid userId");
 			}
