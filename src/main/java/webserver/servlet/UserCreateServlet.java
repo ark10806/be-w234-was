@@ -1,9 +1,10 @@
-package webserver.service;
+package webserver.servlet;
 
 import db.Database;
 import http.ResponsePacket;
 import model.Session;
 import model.User;
+import webserver.service.HttpStatus;
 
 public class UserCreateServlet extends Servlet {
 

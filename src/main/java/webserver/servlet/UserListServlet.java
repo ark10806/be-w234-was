@@ -1,4 +1,4 @@
-package webserver.service;
+package webserver.servlet;
 
 import db.Database;
 import http.Cookie;
@@ -6,6 +6,9 @@ import http.ResponsePacket;
 import java.util.List;
 import model.Session;
 import model.User;
+import webserver.service.HttpStatus;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 
 public class UserListServlet extends Servlet {
 	Cookie cookie;
@@ -51,8 +54,10 @@ public class UserListServlet extends Servlet {
 			responsePacket.setHttpStatus(HttpStatus.FOUND);
 			responsePacket.addEntity("Location: /user/login.html");
 		} else {
-			String view = routeView("/user/list.html");
-			responsePacket.setBody(view.replaceAll("123456789", makeUserTable()));
+			String html = routeView("/user/list.html");
+			Document doc = Jsoup.parse(html);
+			doc.getElementById("user-table").append(makeUserTable());
+			responsePacket.setBody(doc.toString());
 		}
 	}
 

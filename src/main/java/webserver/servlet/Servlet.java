@@ -1,16 +1,14 @@
-package webserver.service;
+package webserver.servlet;
 
 import db.Database;
 import http.RequestPacket;
 import http.ResponsePacket;
 import model.Session;
-import model.User;
+import webserver.service.HttpStatus;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.HashMap;
-import java.util.Map;
 
 public class Servlet implements ServletInterface {
 	protected static Database db;

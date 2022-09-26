@@ -1,4 +1,4 @@
-package webserver.service;
+package webserver.servlet;
 
 import http.RequestPacket;
 import http.ResponsePacket;
