@@ -6,7 +6,11 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class RequestPacket {
+    private final Logger logger = LoggerFactory.getLogger(RequestPacket.class);
     public RequestHeader header = new RequestHeader();
     public Body body = new Body();
     private BufferedReader br;
@@ -35,7 +39,7 @@ public class RequestPacket {
             parseEntityHeader();
             parseBody();
         } catch (IOException e) {
-
+            logger.error("Error on parse(): {}", e);
         }
     }
 
