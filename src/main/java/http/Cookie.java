@@ -1,7 +1,7 @@
 package http;
 
 public class Cookie {
-	public String name;
+  public String name;
 	public String value;
 	public String path;
 

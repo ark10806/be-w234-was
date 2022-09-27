@@ -7,18 +7,19 @@ import org.slf4j.LoggerFactory;
 import webserver.RequestHandler;
 
 public interface ServletInterface {
-	String rootDir = "./webapp/";
-	Logger logger = LoggerFactory.getLogger(RequestHandler.class);
+  String rootDir = "./webapp/";
+  Logger logger = LoggerFactory.getLogger(RequestHandler.class);
 
-	String routeView(String url);
+  String routeView(String url);
 
-	void init(RequestPacket requestPacket, ResponsePacket responsePacket);
-	ResponsePacket run();
+  void init(RequestPacket requestPacket, ResponsePacket responsePacket);
 
-	void doGet();
+  ResponsePacket run();
 
-	void doPost();
+  void doGet();
 
-	void destroy();
+  void doPost();
+
+  void destroy();
 
 }
