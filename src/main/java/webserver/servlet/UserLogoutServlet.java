@@ -3,7 +3,6 @@ package webserver.servlet;
 import db.Database;
 import http.ResponsePacket;
 import model.Session;
-import model.User;
 import webserver.service.HttpStatus;
 
 public class UserLogoutServlet extends Servlet {
@@ -22,8 +21,7 @@ public class UserLogoutServlet extends Servlet {
         doPost();
       }
       responsePacket.setHttpStatus(HttpStatus.OK);
-      return responsePacket;
-    } catch (IllegalArgumentException e) {
+    } catch (Exception e) {
       responsePacket.setHttpStatus(HttpStatus.FOUND);
       responsePacket.addEntity("Location: /index.html");
       responsePacket.setBody(HttpStatus.NOT_FOUND.getMessage());
@@ -39,7 +37,7 @@ public class UserLogoutServlet extends Servlet {
     String uid = requestPacket.header.cookie.value;
     try {
       sessions.remove(uid);
-    } catch (IllegalArgumentException e) {
+    } catch (Exception e) {
       throw e;
     }
   }
