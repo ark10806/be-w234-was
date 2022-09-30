@@ -1,7 +1,6 @@
 package model;
 
 import java.util.ArrayDeque;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -43,8 +42,10 @@ public class Session {
 
   // 접근권한이 있는 모든 사용자를 반환
   public List getAll() {
-    List<String> output = sessions.keySet().stream().collect(Collectors.toList());
-    Collections.sort(output);
+    List<String> output = sessions.keySet()
+        .stream()
+        .sorted()
+        .collect(Collectors.toList());
     return output;
   }
 
