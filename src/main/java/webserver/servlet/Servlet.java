@@ -7,11 +7,14 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import model.Session;
+import org.slf4j.Logger;
 import webserver.service.HttpStatus;
 
 public class Servlet implements ServletInterface {
+
   protected static Database db;
   protected static Session sessions;
+  public Logger logger;
   protected RequestPacket requestPacket;
   protected ResponsePacket responsePacket;
 
