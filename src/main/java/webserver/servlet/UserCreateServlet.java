@@ -70,7 +70,4 @@ public class UserCreateServlet extends Servlet {
     }
   }
 
-  @Override
-  public void destroy() {
-  }
 }

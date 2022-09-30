@@ -8,9 +8,12 @@ import model.Session;
 import model.User;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import webserver.service.HttpStatus;
 
 public class UserListServlet extends Servlet {
+  Logger logger = LoggerFactory.getLogger(UserListServlet.class);
   Cookie cookie;
 
   public UserListServlet(Database db, Session session) {
@@ -32,6 +35,7 @@ public class UserListServlet extends Servlet {
     } catch (Exception e) {
       responsePacket.setHttpStatus(HttpStatus.BAD_REQUEST);
       responsePacket.setBody(HttpStatus.BAD_REQUEST.getMessage());
+      e.printStackTrace();
     } finally {
       destroy();
       return responsePacket;
@@ -54,7 +58,9 @@ public class UserListServlet extends Servlet {
 
   @Override
   public void doGet() {
-    if (!sessions.check(cookie.value)) {
+    System.out.println("$$$$$$$$$$$$$$$$");
+    System.out.println(sessions.getAll());
+    if (cookie == null || !sessions.check(cookie.value)) {
       responsePacket.setHttpStatus(HttpStatus.FOUND);
       responsePacket.addEntity("Location: /user/login.html");
     } else {
@@ -65,11 +71,4 @@ public class UserListServlet extends Servlet {
     }
   }
 
-  @Override
-  public void doPost() {
-  }
-
-  @Override
-  public void destroy() {
-  }
 }

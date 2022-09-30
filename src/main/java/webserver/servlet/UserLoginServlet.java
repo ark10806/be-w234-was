@@ -4,9 +4,12 @@ import db.Database;
 import http.ResponsePacket;
 import model.Session;
 import model.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import webserver.service.HttpStatus;
 
 public class UserLoginServlet extends Servlet {
+  Logger logger = LoggerFactory.getLogger(UserLoginServlet.class);
   String uid;
 
   public UserLoginServlet(Database db, Session session) {
@@ -69,7 +72,4 @@ public class UserLoginServlet extends Servlet {
     }
   }
 
-  @Override
-  public void destroy() {
-  }
 }

@@ -3,9 +3,12 @@ package webserver.servlet;
 import db.Database;
 import http.ResponsePacket;
 import model.Session;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import webserver.service.HttpStatus;
 
 public class UserLogoutServlet extends Servlet {
+  Logger logger = LoggerFactory.getLogger(UserLogoutServlet.class);
 
   public UserLogoutServlet(Database db, Session session) {
     super(db, session);
@@ -25,6 +28,7 @@ public class UserLogoutServlet extends Servlet {
       responsePacket.setHttpStatus(HttpStatus.FOUND);
       responsePacket.addEntity("Location: /index.html");
       responsePacket.setBody(HttpStatus.NOT_FOUND.getMessage());
+      logger.error("request error: {}", e.getMessage());
       e.printStackTrace();
     } finally {
       destroy();
@@ -42,11 +46,4 @@ public class UserLogoutServlet extends Servlet {
     }
   }
 
-  @Override
-  public void doPost() {
-  }
-
-  @Override
-  public void destroy() {
-  }
 }
