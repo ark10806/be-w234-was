@@ -8,7 +8,7 @@ public interface ServletInterface {
 
   String routeView(String url);
 
-  void init(RequestPacket requestPacket, ResponsePacket responsePacket);
+  ServletInterface init(RequestPacket requestPacket, ResponsePacket responsePacket);
 
   ResponsePacket run();
 

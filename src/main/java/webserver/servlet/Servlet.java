@@ -34,9 +34,10 @@ public class Servlet implements ServletInterface {
   }
 
   @Override
-  public void init(RequestPacket requestPacket, ResponsePacket responsePacket) {
+  public Servlet init(RequestPacket requestPacket, ResponsePacket responsePacket) {
     this.requestPacket = requestPacket;
     this.responsePacket = responsePacket;
+    return this;
   }
 
   @Override

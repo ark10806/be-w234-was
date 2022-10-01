@@ -48,8 +48,7 @@ public class Backend {
       responsePacket.setBody(HttpStatus.NOT_FOUND.getMessage());
     } finally {
       if (router.containsKey(url)) {
-        router.get(url).init(requestPacket, responsePacket);
-        responsePacket = router.get(url).run();
+        responsePacket = router.get(url).init(requestPacket, responsePacket).run();
       }
       return responsePacket;
     }
