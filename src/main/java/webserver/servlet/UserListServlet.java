@@ -22,13 +22,24 @@ public class UserListServlet extends Servlet {
   public String makeUserTable() {
     StringBuilder userTable = new StringBuilder();
     List<String> online = sessionManager.getAll();
+    String newline = System.getProperty("line.separator");
 
     for (int i = 0; i < online.size(); i++) {
       User user = db.findUserById(online.get(i));
-      userTable.append(String.format(
-          "\n<tr>\n<th scope=\"row\">%d</th> <td>%s</td> <td>%s</td> <td>%s</td>"
-          + "<td><a href=\"#\" class=\"btn btn-success\" role=\"button\">수정</a></td>\n</tr>",
-          i + 1, user.getUserId(), user.getName(), user.getEmail()));
+      userTable
+        .append(newline)
+        .append("<tr>")
+        .append(newline)
+        .append("<th scope=\"row\">")
+        .append(i + 1)
+        .append("</th> <td>")
+        .append(user.getUserId())
+        .append("</td> <td>")
+        .append(user.getName())
+        .append("</td> <td>")
+        .append(user.getEmail())
+        .append("</td>")
+        .append("<td><a href=\"#\" class=\"btn btn-success\" role=\"button\">수정</a></td>\n</tr>");
     }
     return userTable.toString();
   }

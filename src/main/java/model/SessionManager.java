@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 // Cookie 를 사용하는 요청을 인증
-public class Session {
+public class SessionManager {
   private static final long TTL = 5 * 1000;
   private Map<String, Long> sessions = new HashMap<>();
   private ArrayDeque<String> logQue = new ArrayDeque<>();

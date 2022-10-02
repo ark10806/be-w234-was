@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.Map;
-import model.Session;
+import model.SessionManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import webserver.servlet.Servlet;
@@ -25,13 +25,11 @@ public class Backend {
   private ResponsePacket responsePacket;
 
   public Backend(RequestPacket requestPacket, ResponsePacket responsePacket,
-      Database db, Session sessions) {
+      Database db, SessionManager sessions) {
     router.put("/user/create", new UserCreateServlet(db, sessions));
     router.put("/user/login", new UserLoginServlet(db, sessions));
     router.put("/user/list.html", new UserListServlet(db, sessions));
     router.put("/user/logout.html", new UserLogoutServlet(db, sessions));
-    // router.put("/qna/show.html", new QnAShowServlet(db, sessions));
-    // router.put("/qna/form.html", new QnAListServlet(db, sessions));
     this.requestPacket = requestPacket;
     this.responsePacket = responsePacket;
   }
