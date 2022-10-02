@@ -3,7 +3,7 @@ package webserver.servlet;
 import db.Database;
 import java.util.Map;
 import javax.management.openmbean.KeyAlreadyExistsException;
-import model.Session;
+import model.SessionManager;
 import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,8 +12,8 @@ import webserver.service.HttpStatus;
 public class UserCreateServlet extends Servlet {
   Logger logger = LoggerFactory.getLogger(UserCreateServlet.class);
 
-  public UserCreateServlet(Database db, Session session) {
-    super(db, session);
+  public UserCreateServlet(Database db, SessionManager sessionManager) {
+    super(db, sessionManager);
   }
 
 

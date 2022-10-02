@@ -3,7 +3,7 @@ package webserver.servlet;
 import db.Database;
 import http.Cookie;
 import java.util.List;
-import model.Session;
+import model.SessionManager;
 import model.User;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -15,13 +15,13 @@ public class UserListServlet extends Servlet {
   Logger logger = LoggerFactory.getLogger(UserListServlet.class);
   Cookie cookie;
 
-  public UserListServlet(Database db, Session session) {
-    super(db, session);
+  public UserListServlet(Database db, SessionManager sessionManager) {
+    super(db, sessionManager);
   }
 
   public String makeUserTable() {
     StringBuilder userTable = new StringBuilder();
-    List<String> online = sessions.getAll();
+    List<String> online = sessionManager.getAll();
 
     for (int i = 0; i < online.size(); i++) {
       User user = db.findUserById(online.get(i));
@@ -37,7 +37,7 @@ public class UserListServlet extends Servlet {
   public void doGet() {
     try {
       cookie = requestPacket.header.cookie;
-      if (cookie == null || !sessions.check(cookie.value)) {
+      if (cookie == null || !sessionManager.check(cookie.value)) {
         responsePacket.setHttpStatus(HttpStatus.FOUND);
         responsePacket.addEntity("Location: /user/login.html");
       } else {

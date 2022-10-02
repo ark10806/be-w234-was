@@ -6,21 +6,21 @@ import http.ResponsePacket;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import model.Session;
+import model.SessionManager;
 import org.slf4j.Logger;
 import webserver.service.HttpStatus;
 
 public class Servlet implements ServletInterface {
 
   protected static Database db;
-  protected static Session sessions;
+  protected static SessionManager sessionManager;
   public Logger logger;
   protected RequestPacket requestPacket;
   protected ResponsePacket responsePacket;
 
-  public Servlet(Database db, Session sessions) {
+  public Servlet(Database db, SessionManager sessionManager) {
     this.db = db;
-    this.sessions = sessions;
+    this.sessionManager = sessionManager;
   }
 
   @Override
