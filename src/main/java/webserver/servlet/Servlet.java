@@ -43,14 +43,19 @@ public class Servlet implements ServletInterface {
   @Override
   public ResponsePacket run() {
     try {
-      if ("GET".equals(requestPacket.header.method)) {
-        doGet();
+      switch (requestPacket.header.method) {
+        case "GET":
+          doGet();
+          break;
+        case "POST":
+          doPost();
+          break;
+        default:
+          break;
       }
-      if ("POST".equals(requestPacket.header.method)) {
-        doPost();
-      }
-    } catch (IllegalArgumentException e) {
-      responsePacket.setHttpStatus(HttpStatus.BAD_REQUEST);
+    } catch (Exception e) {
+      responsePacket.setHttpStatus((HttpStatus.BAD_REQUEST));
+      responsePacket.setBody(HttpStatus.BAD_REQUEST.getMessage());
     } finally {
       destroy();
       return responsePacket;

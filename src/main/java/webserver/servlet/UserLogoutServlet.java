@@ -1,7 +1,6 @@
 package webserver.servlet;
 
 import db.Database;
-import http.ResponsePacket;
 import model.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,34 +14,15 @@ public class UserLogoutServlet extends Servlet {
   }
 
   @Override
-  public ResponsePacket run() {
+  public void doGet() {
+    String uid = requestPacket.header.cookie.value;
     try {
-      if ("GET".equals(requestPacket.header.method)) {
-        doGet();
-      }
-      if ("POST".equals(requestPacket.header.method)) {
-        doPost();
-      }
+      sessions.remove(uid);
       responsePacket.setHttpStatus(HttpStatus.OK);
     } catch (Exception e) {
       responsePacket.setHttpStatus(HttpStatus.FOUND);
       responsePacket.addEntity("Location: /index.html");
       responsePacket.setBody(HttpStatus.NOT_FOUND.getMessage());
-      logger.error("request error: {}", e.getMessage());
-      e.printStackTrace();
-    } finally {
-      destroy();
-      return responsePacket;
-    }
-  }
-
-  @Override
-  public void doGet() {
-    String uid = requestPacket.header.cookie.value;
-    try {
-      sessions.remove(uid);
-    } catch (Exception e) {
-      throw e;
     }
   }
 

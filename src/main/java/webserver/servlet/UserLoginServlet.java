@@ -1,7 +1,6 @@
 package webserver.servlet;
 
 import db.Database;
-import http.ResponsePacket;
 import model.Session;
 import model.User;
 import org.slf4j.Logger;
@@ -10,66 +9,37 @@ import webserver.service.HttpStatus;
 
 public class UserLoginServlet extends Servlet {
   Logger logger = LoggerFactory.getLogger(UserLoginServlet.class);
-  String uid;
 
   public UserLoginServlet(Database db, Session session) {
     super(db, session);
   }
 
-  @Override
-  public ResponsePacket run() {
-    try {
-      if ("GET".equals(requestPacket.header.method)) {
-        doGet();
-      }
-      if ("POST".equals(requestPacket.header.method)) {
-        doPost();
-      }
-      responsePacket.setHttpStatus(HttpStatus.FOUND);
+  private void validateUser(String uid, String password) {
+    User criteria = db.findUserById(uid);
+    responsePacket.setHttpStatus(HttpStatus.FOUND);
+    if (criteria != null && criteria.getPassword().equals(password)) {
       responsePacket.addEntity("Location: /index.html");
       responsePacket.addEntity(String.format("Set-Cookie: logined=%s; Path=/", uid));
       sessions.put(uid);
-      return responsePacket;
-    } catch (IllegalArgumentException e) {
-      responsePacket.setHttpStatus(HttpStatus.FOUND);
+    } else {
       responsePacket.addEntity("Location: /user/login_failed.html");
-      responsePacket.setBody(HttpStatus.NOT_FOUND.getMessage());
-    } finally {
-      destroy();
-      return responsePacket;
     }
   }
 
   @Override
   public void doGet() {
-    this.uid = requestPacket.header.queryString.get("userId");
-    try {
-      User criteria = db.findUserById(this.uid);
-      if (criteria == null) {
-        throw new IllegalArgumentException("invalid userId");
-      }
-      if (!criteria.getPassword().equals(requestPacket.header.queryString.get("password"))) {
-        throw new IllegalArgumentException("wrong userId or password");
-      }
-    } catch (IllegalArgumentException e) {
-      throw e;
-    }
+    validateUser(
+        requestPacket.header.queryString.get("userId"),
+        requestPacket.header.queryString.get("password")
+    );
   }
 
   @Override
   public void doPost() {
-    this.uid = requestPacket.body.params.get("userId");
-    try {
-      User criteria = db.findUserById(this.uid);
-      if (criteria == null) {
-        throw new IllegalArgumentException("invalid userId");
-      }
-      if (!criteria.getPassword().equals(requestPacket.body.params.get("password"))) {
-        throw new IllegalArgumentException("wrong userId or password");
-      }
-    } catch (IllegalArgumentException e) {
-      throw e;
-    }
+    validateUser(
+        requestPacket.body.params.get("userId"),
+        requestPacket.body.params.get("password")
+    );
   }
 
 }
