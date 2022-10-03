@@ -3,6 +3,8 @@ package webserver.servlet;
 import db.entity.User;
 import java.util.Map;
 import javax.management.openmbean.KeyAlreadyExistsException;
+
+import exception.UserException;
 import model.SessionManager;
 
 import org.slf4j.Logger;
@@ -11,11 +13,6 @@ import webserver.service.HttpStatus;
 
 public class UserCreateServlet extends Servlet {
   Logger logger = LoggerFactory.getLogger(UserCreateServlet.class);
-
-  public UserCreateServlet(SessionManager sessionManager) {
-    super(sessionManager);
-  }
-
 
   private void signUp(Map<String, String> userInfo) {
     try {
@@ -27,7 +24,7 @@ public class UserCreateServlet extends Servlet {
       ));
       responsePacket.setHttpStatus(HttpStatus.FOUND);
       responsePacket.addEntity("Location: /user/login.html");
-    } catch (KeyAlreadyExistsException e) {
+    } catch (UserException e) {
       responsePacket.setHttpStatus(HttpStatus.FOUND);
       responsePacket.addEntity("Location: /user/form_exists.html");
       logger.debug("userId [{}] already in used");

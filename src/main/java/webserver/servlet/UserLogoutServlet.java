@@ -7,10 +7,8 @@ import webserver.service.HttpStatus;
 
 public class UserLogoutServlet extends Servlet {
   Logger logger = LoggerFactory.getLogger(UserLogoutServlet.class);
+  private SessionManager sessionManager = new SessionManager();
 
-  public UserLogoutServlet(SessionManager sessionManager) {
-    super(sessionManager);
-  }
 
   @Override
   public void doGet() {

@@ -18,11 +18,9 @@ public class RequestHandler implements Runnable {
   private RequestPacket reqPacket;
   private ResponsePacket resPacket;
   private Backend backend;
-  private SessionManager sessionManager;
 
-  public RequestHandler(Socket connectionSock, SessionManager sessionManager) {
+  public RequestHandler(Socket connectionSock) {
     this.connection = connectionSock;
-    this.sessionManager = sessionManager;
   }
 
   public void run() {
@@ -36,7 +34,7 @@ public class RequestHandler implements Runnable {
       reqPacket.prn();
 
       resPacket = new ResponsePacket(out);
-      backend = new Backend(reqPacket, resPacket, sessionManager);
+      backend = new Backend(reqPacket, resPacket);
       resPacket = backend.route();
       resPacket.flush();
       resPacket.prn();

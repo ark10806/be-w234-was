@@ -4,16 +4,15 @@ import javax.persistence.*;
 
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
 @Getter
 @Setter
-@NoArgsConstructor
 public class User implements Comparable<User> {
 
-  @Builder
+  public User() {}
+
   public User(String userId, String password, String name, String email) {
     if (userId != null && password != null && name != null && email != null) {
       this.userId = userId;

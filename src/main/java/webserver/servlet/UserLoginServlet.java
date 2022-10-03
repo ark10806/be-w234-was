@@ -1,7 +1,8 @@
 package webserver.servlet;
 
 import db.entity.User;
-import db.manager.UserManager;
+import exception.UserException;
+import exception.UserExceptionMessage;
 import model.SessionManager;
 
 import org.slf4j.Logger;
@@ -10,20 +11,23 @@ import webserver.service.HttpStatus;
 
 public class UserLoginServlet extends Servlet {
   Logger logger = LoggerFactory.getLogger(UserLoginServlet.class);
+  private SessionManager sessionManager = new SessionManager();
 
-  public UserLoginServlet(SessionManager sessionManager) {
-    super(sessionManager);
-  }
 
   private void validateUser(String uid, String password) {
-    User criteria = userManager.findById(uid);
     responsePacket.setHttpStatus(HttpStatus.FOUND);
-    if (criteria != null && criteria.getPassword().equals(password)) {
+    try {
+      User criteria = userManager.findById(uid);
+      if (criteria.getPassword().equals(password))
+        throw new UserException(UserExceptionMessage.INVALID_USER_PARAMETERS);
       responsePacket.addEntity("Location: /index.html");
       responsePacket.addEntity(String.format("Set-Cookie: logined=%s; Path=/", uid));
       sessionManager.put(uid);
-    } else {
+    } catch (UserException e) {
       responsePacket.addEntity("Location: /user/login_failed.html");
+    } catch (Exception e) {
+      responsePacket.setBody(e.getMessage());
+      e.printStackTrace();
     }
   }
 

@@ -12,11 +12,8 @@ import webserver.service.HttpStatus;
 
 public class UserListServlet extends Servlet {
   Logger logger = LoggerFactory.getLogger(UserListServlet.class);
-  Cookie cookie;
-
-  public UserListServlet(SessionManager sessionManager) {
-    super(sessionManager);
-  }
+  private SessionManager sessionManager = new SessionManager();
+  private Cookie cookie;
 
   public String makeUserTable() {
     StringBuilder userTable = new StringBuilder();

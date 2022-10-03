@@ -6,11 +6,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+
 // Cookie 를 사용하는 요청을 인증
 public class SessionManager {
   private static final long TTL = 5 * 1000;
-  private Map<String, Long> sessions = new HashMap<>();
-  private ArrayDeque<String> logQue = new ArrayDeque<>();
+  private static Map<String, Long> sessions = new HashMap<>();
+  private static ArrayDeque<String> logQue = new ArrayDeque<>();
+
 
   // 요청을 보낸 사용자가 인증목록에 있는지 확인
   public boolean check(String uid) {

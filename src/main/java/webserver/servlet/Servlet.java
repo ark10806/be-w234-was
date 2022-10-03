@@ -12,15 +12,10 @@ import webserver.service.HttpStatus;
 
 public class Servlet implements ServletInterface {
 
-  protected static SessionManager sessionManager;
   public Logger logger;
   protected RequestPacket requestPacket;
   protected ResponsePacket responsePacket;
   protected static UserManager userManager = new UserManager();
-
-  public Servlet(SessionManager sessionManager) {
-    this.sessionManager = sessionManager;
-  }
 
   @Override
   public String routeView(String url) {

@@ -10,31 +10,44 @@ import exception.UserException;
 import exception.UserExceptionMessage;
 
 public class UserManager {
-  EntityManagerFactory emf = Persistence.createEntityManagerFactory("onboarding");
-  EntityManager em = emf.createEntityManager();
-  EntityTransaction tx = em.getTransaction();
-  private static UserManager instance = new UserManager();
+  private static EntityManagerFactory emf = Persistence.createEntityManagerFactory("onboarding");
+  private static EntityManager em;
+  private static EntityTransaction tx;
 
-  public static UserManager getInstance() {
-    return instance;
-  }
 
   public void insert(User user) {
     try {
+      createEntityManager();
+      beginTransaction();
       tx.begin();
       em.persist(user);
       tx.commit();
     } catch (Exception e) {
       tx.rollback();
-      e.printStackTrace();
+      throw new UserException(UserExceptionMessage.USER_ALREADY_EXISTS);
+    } finally {
+      closeEntityManager();
     }
   }
 
   public User findById(String userId) {
+    createEntityManager();
     User user = em.find(User.class, userId);
-    if (user == null)
-      throw new UserException(UserExceptionMessage.USER_NOT_FOUND);
+    if (user == null) throw new UserException(UserExceptionMessage.USER_NOT_FOUND);
+    closeEntityManager();
     return user;
+  }
+
+  private void createEntityManager() {
+    em = emf.createEntityManager();
+  }
+
+  private void closeEntityManager() {
+    em.close();
+  }
+
+  private void beginTransaction() {
+    tx = em.getTransaction();
   }
 
 }
