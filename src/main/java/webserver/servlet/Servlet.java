@@ -1,6 +1,6 @@
 package webserver.servlet;
 
-import db.Database;
+import db.manager.UserManager;
 import http.RequestPacket;
 import http.ResponsePacket;
 import java.io.File;
@@ -12,14 +12,13 @@ import webserver.service.HttpStatus;
 
 public class Servlet implements ServletInterface {
 
-  protected static Database db;
   protected static SessionManager sessionManager;
   public Logger logger;
   protected RequestPacket requestPacket;
   protected ResponsePacket responsePacket;
+  protected static UserManager userManager = new UserManager();
 
-  public Servlet(Database db, SessionManager sessionManager) {
-    this.db = db;
+  public Servlet(SessionManager sessionManager) {
     this.sessionManager = sessionManager;
   }
 

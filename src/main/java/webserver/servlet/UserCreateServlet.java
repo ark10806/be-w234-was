@@ -1,10 +1,10 @@
 package webserver.servlet;
 
-import db.Database;
+import db.entity.User;
 import java.util.Map;
 import javax.management.openmbean.KeyAlreadyExistsException;
 import model.SessionManager;
-import model.User;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import webserver.service.HttpStatus;
@@ -12,14 +12,14 @@ import webserver.service.HttpStatus;
 public class UserCreateServlet extends Servlet {
   Logger logger = LoggerFactory.getLogger(UserCreateServlet.class);
 
-  public UserCreateServlet(Database db, SessionManager sessionManager) {
-    super(db, sessionManager);
+  public UserCreateServlet(SessionManager sessionManager) {
+    super(sessionManager);
   }
 
 
   private void signUp(Map<String, String> userInfo) {
     try {
-      db.addUser(new User(
+      userManager.insert(new User(
           userInfo.get("userId"),
           userInfo.get("password"),
           userInfo.get("name"),

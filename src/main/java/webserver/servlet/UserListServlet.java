@@ -1,10 +1,9 @@
 package webserver.servlet;
 
-import db.Database;
+import db.entity.User;
 import http.Cookie;
 import java.util.List;
 import model.SessionManager;
-import model.User;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.slf4j.Logger;
@@ -15,8 +14,8 @@ public class UserListServlet extends Servlet {
   Logger logger = LoggerFactory.getLogger(UserListServlet.class);
   Cookie cookie;
 
-  public UserListServlet(Database db, SessionManager sessionManager) {
-    super(db, sessionManager);
+  public UserListServlet(SessionManager sessionManager) {
+    super(sessionManager);
   }
 
   public String makeUserTable() {
@@ -25,7 +24,7 @@ public class UserListServlet extends Servlet {
     String newline = System.getProperty("line.separator");
 
     for (int i = 0; i < online.size(); i++) {
-      User user = db.findUserById(online.get(i));
+      User user = userManager.findById(online.get(i));
       userTable
         .append(newline)
         .append("<tr>")

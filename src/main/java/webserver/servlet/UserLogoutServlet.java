@@ -1,6 +1,5 @@
 package webserver.servlet;
 
-import db.Database;
 import model.SessionManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,8 +8,8 @@ import webserver.service.HttpStatus;
 public class UserLogoutServlet extends Servlet {
   Logger logger = LoggerFactory.getLogger(UserLogoutServlet.class);
 
-  public UserLogoutServlet(Database db, SessionManager sessionManager) {
-    super(db, sessionManager);
+  public UserLogoutServlet(SessionManager sessionManager) {
+    super(sessionManager);
   }
 
   @Override

@@ -1,8 +1,9 @@
 package webserver.servlet;
 
-import db.Database;
+import db.entity.User;
+import db.manager.UserManager;
 import model.SessionManager;
-import model.User;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import webserver.service.HttpStatus;
@@ -10,12 +11,12 @@ import webserver.service.HttpStatus;
 public class UserLoginServlet extends Servlet {
   Logger logger = LoggerFactory.getLogger(UserLoginServlet.class);
 
-  public UserLoginServlet(Database db, SessionManager sessionManager) {
-    super(db, sessionManager);
+  public UserLoginServlet(SessionManager sessionManager) {
+    super(sessionManager);
   }
 
   private void validateUser(String uid, String password) {
-    User criteria = db.findUserById(uid);
+    User criteria = userManager.findById(uid);
     responsePacket.setHttpStatus(HttpStatus.FOUND);
     if (criteria != null && criteria.getPassword().equals(password)) {
       responsePacket.addEntity("Location: /index.html");
