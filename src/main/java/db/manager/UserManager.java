@@ -1,13 +1,12 @@
 package db.manager;
 
+import db.entity.User;
+import exception.UserException;
+import exception.UserExceptionMessage;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
-
-import db.entity.User;
-import exception.UserException;
-import exception.UserExceptionMessage;
 
 public class UserManager {
   private static EntityManagerFactory emf = Persistence.createEntityManagerFactory("onboarding");
@@ -18,7 +17,7 @@ public class UserManager {
   public void insert(User user) {
     try {
       createEntityManager();
-      beginTransaction();
+      createTransaction();
       tx.begin();
       em.persist(user);
       tx.commit();
@@ -33,7 +32,9 @@ public class UserManager {
   public User findById(String userId) {
     createEntityManager();
     User user = em.find(User.class, userId);
-    if (user == null) throw new UserException(UserExceptionMessage.USER_NOT_FOUND);
+    if (user == null) {
+      throw new UserException(UserExceptionMessage.USER_NOT_FOUND);
+    }
     closeEntityManager();
     return user;
   }
@@ -46,7 +47,7 @@ public class UserManager {
     em.close();
   }
 
-  private void beginTransaction() {
+  private void createTransaction() {
     tx = em.getTransaction();
   }
 

@@ -23,19 +23,19 @@ public class UserListServlet extends Servlet {
     for (int i = 0; i < online.size(); i++) {
       User user = userManager.findById(online.get(i));
       userTable
-        .append(newline)
-        .append("<tr>")
-        .append(newline)
-        .append("<th scope=\"row\">")
-        .append(i + 1)
-        .append("</th> <td>")
-        .append(user.getUserId())
-        .append("</td> <td>")
-        .append(user.getName())
-        .append("</td> <td>")
-        .append(user.getEmail())
-        .append("</td>")
-        .append("<td><a href=\"#\" class=\"btn btn-success\" role=\"button\">수정</a></td>\n</tr>");
+          .append(newline)
+          .append("<tr>")
+          .append(newline)
+          .append("<th scope=\"row\">")
+          .append(i + 1)
+          .append("</th> <td>")
+          .append(user.getUserId())
+          .append("</td> <td>")
+          .append(user.getName())
+          .append("</td> <td>")
+          .append(user.getEmail())
+          .append("</td>")
+          .append("<td><a href=\"#\" class=\"btn btn-success\" role=\"button\">수정</a></td>\n</tr>");
     }
     return userTable.toString();
   }

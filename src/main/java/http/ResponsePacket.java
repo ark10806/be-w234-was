@@ -58,9 +58,9 @@ public class ResponsePacket {
   void writeHeader() {
     try {
       dos.writeBytes(String.format("%s %d %s \r\n",
-        httpVersion, httpStatusCode, httpStatusMessage));
+          httpVersion, httpStatusCode, httpStatusMessage));
       dos.writeBytes(String.format("Content-Type: %s \r\n",
-        contentType));
+          contentType));
       dos.writeBytes(String.format("Content-Length: " + body.length + "\r\n"));
       for (String line : entities) {
         dos.writeBytes(line + "\r\n");

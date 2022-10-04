@@ -6,6 +6,7 @@ public enum UserExceptionMessage {
   USER_NOT_FOUND("User Not Found");
 
   final String message;
+
   UserExceptionMessage(String message) {
     this.message = message;
   }

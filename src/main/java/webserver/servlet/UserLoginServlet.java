@@ -4,7 +4,6 @@ import db.entity.User;
 import exception.UserException;
 import exception.UserExceptionMessage;
 import model.SessionManager;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import webserver.service.HttpStatus;
@@ -18,8 +17,9 @@ public class UserLoginServlet extends Servlet {
     responsePacket.setHttpStatus(HttpStatus.FOUND);
     try {
       User criteria = userManager.findById(uid);
-      if (criteria.getPassword().equals(password))
+      if (!criteria.getPassword().equals(password)) {
         throw new UserException(UserExceptionMessage.INVALID_USER_PARAMETERS);
+      }
       responsePacket.addEntity("Location: /index.html");
       responsePacket.addEntity(String.format("Set-Cookie: logined=%s; Path=/", uid));
       sessionManager.put(uid);

@@ -1,8 +1,8 @@
 package db.entity;
 
-import javax.persistence.*;
-
-import lombok.Builder;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -23,6 +23,7 @@ public class User implements Comparable<User> {
       throw new IllegalArgumentException(this.toString() + " are not valid arguments.");
     }
   }
+
   @Id
   @Column(nullable = false, name = "user_id")
   private String userId;
@@ -37,7 +38,9 @@ public class User implements Comparable<User> {
   private String email;
 
   @Override
-  public int compareTo(User u) { return this.userId.compareTo(u.userId); }
+  public int compareTo(User u) {
+    return this.userId.compareTo(u.userId);
+  }
 
   @Override
   public String toString() {

@@ -1,26 +1,23 @@
 package db.entity;
 
 import java.time.LocalDateTime;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-
-import org.hibernate.annotations.CreationTimestamp;
-
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
 
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
-public class Posts {
+public class Post {
 
-  public Posts(User user, String memo) {
+  public Post(User user, String memo) {
     this.user = user;
     this.memo = memo;
   }
@@ -34,7 +31,7 @@ public class Posts {
   private User user;
 
   @CreationTimestamp
-  private LocalDateTime created;
+  private LocalDateTime createdAt;
 
   private String memo;
 }

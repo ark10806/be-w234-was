@@ -1,12 +1,9 @@
 package webserver.servlet;
 
 import db.entity.User;
+import exception.UserException;
 import java.util.Map;
 import javax.management.openmbean.KeyAlreadyExistsException;
-
-import exception.UserException;
-import model.SessionManager;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import webserver.service.HttpStatus;
