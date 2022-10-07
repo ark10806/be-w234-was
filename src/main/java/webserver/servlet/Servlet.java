@@ -6,7 +6,6 @@ import http.ResponsePacket;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import model.SessionManager;
 import org.slf4j.Logger;
 import webserver.service.HttpStatus;
 

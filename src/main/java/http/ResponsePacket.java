@@ -17,7 +17,6 @@ public class ResponsePacket {
   private String contentType;
   private List<String> entities = new ArrayList<>();
   private byte[] body = "".getBytes();
-  private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
   private DataOutputStream dos;
 
   public ResponsePacket(final OutputStream out) {

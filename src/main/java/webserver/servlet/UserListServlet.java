@@ -55,6 +55,7 @@ public class UserListServlet extends Servlet {
         responsePacket.setBody(doc.toString());
       }
     } catch (Exception e) {
+      logger.error(e.getMessage());
       throw e;
     }
   }

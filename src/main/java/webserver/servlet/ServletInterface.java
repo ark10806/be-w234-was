@@ -1,6 +1,5 @@
 package webserver.servlet;
 
-import db.manager.UserManager;
 import http.RequestPacket;
 import http.ResponsePacket;
 

@@ -27,7 +27,7 @@ public class UserLoginServlet extends Servlet {
       responsePacket.addEntity("Location: /user/login_failed.html");
     } catch (Exception e) {
       responsePacket.setBody(e.getMessage());
-      e.printStackTrace();
+      logger.error(e.getMessage());
     }
   }
 

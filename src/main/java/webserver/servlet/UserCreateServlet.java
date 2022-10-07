@@ -24,7 +24,7 @@ public class UserCreateServlet extends Servlet {
     } catch (UserException e) {
       responsePacket.setHttpStatus(HttpStatus.FOUND);
       responsePacket.addEntity("Location: /user/form_exists.html");
-      logger.debug("userId [{}] already in used");
+      logger.debug(e.getMessage());
     } catch (Exception e) {
       responsePacket.setHttpStatus(HttpStatus.INTERNAL_SERVER_ERROR);
       responsePacket.setBody(HttpStatus.INTERNAL_SERVER_ERROR.getMessage());

@@ -33,5 +33,6 @@ public class Post {
   @CreationTimestamp
   private LocalDateTime createdAt;
 
+  // @Column()
   private String memo;
 }

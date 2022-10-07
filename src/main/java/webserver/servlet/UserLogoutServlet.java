@@ -20,6 +20,7 @@ public class UserLogoutServlet extends Servlet {
       responsePacket.setHttpStatus(HttpStatus.FOUND);
       responsePacket.addEntity("Location: /index.html");
       responsePacket.setBody(HttpStatus.NOT_FOUND.getMessage());
+      logger.error(e.getMessage());
     }
   }
 
